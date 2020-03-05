@@ -1,6 +1,8 @@
-class State:
+
+
+class Node:
     """
-    Class used to represent each board state.
+    Class used to represent each board state/node.
     """
     def __init__(self, board, board_size):
         """
@@ -25,6 +27,6 @@ class State:
         pass
 
 
-    def draw_state(self):
+    def draw_node_in_terminal(self):
         for row in self.board:
             print(*row)

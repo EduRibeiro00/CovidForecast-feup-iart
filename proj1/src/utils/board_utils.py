@@ -2,8 +2,8 @@ def create_initial_board(size, white='W', black='B', neutron='N', blank=' '):
     """
     Function that creates and returns the initial Neutron board with the referred size.
     """
-    if size % 2 == 0:
-        raise ValueError("Board size cannot be an even number")
+    if (size % 2 == 0) or size > 15:
+        raise ValueError("Invalid value for board size")
 
     board = []
     empty_rows = (size - 3) // 2
