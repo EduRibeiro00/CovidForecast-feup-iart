@@ -29,7 +29,7 @@ if __name__ == '__main__':
                 if unique:
                     new_state.set_parent(cur_state)
                     potencial_states.append(new_state)
-                    potencial_states.sort(key=get_a_star_value)
+                    potencial_states.sort(key=get_uniform_cost_value)
 
         if not potencial_states:
             print("No solution")
