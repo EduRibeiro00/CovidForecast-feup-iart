@@ -20,7 +20,7 @@ class State:
 
     def is_final_state(self, current_player):
         """
-        Determines whether the state is final
+        Determines whether the state is final.
         """
         pass
 
