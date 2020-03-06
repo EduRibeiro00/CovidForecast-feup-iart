@@ -4,7 +4,8 @@ class GameState(enum.Enum):
     """
     Class representing the main game states of the program.
     """
-    main_menu = 1
-    player_select = 2
-    difficulty = 3
-    play = 4
+    MAIN_MENU = 1
+    PLAYER_SELECT = 2
+    DIFFICULTY = 3
+    PLAY = 4
+    EXIT = 5

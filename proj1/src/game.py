@@ -1,6 +1,8 @@
-from ai.state import Node
+from ai.node import Node
 from utils.board_utils import create_initial_board
 from interface.game_interface import GameInterface
+from state.game_state import GameState
+from state.play_state import PlayState
 
 class Game:
     """
@@ -13,13 +15,32 @@ class Game:
         self.current_player = 'white' # white player starts first
         self.current_state = Node(create_initial_board(size), size) # create board with the wanted size
         self.interface = GameInterface(size)
+        self.game_state = GameState.PLAY
+        self.play_state = PlayState.PLAYER_A_CHOOSING
 
 
     def run(self):
         """
         Main method of the game class. Contains the main game cycle.
         """
-        self.interface.draw_background()
+        while self.game_state != GameState.EXIT:
+            self.process_events()
+
+            self.interface.draw_background()
+
+
+    def process_events(self):
+        """
+        Method that processes events from the interface.
+        """
+        event_queue = self.interface.watch_for_events()  # get events from pygame
+
+        for event in event_queue:
+            if event == 'EVENT_QUIT': # quit the game
+                self.game_state = GameState.EXIT
+
+            # TODO: processar os outros eventos
+
 
 
     def exit(self):
