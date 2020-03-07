@@ -13,7 +13,7 @@ class Game:
         Constructor of the class.
         """
         self.current_player = 'white' # white player starts first
-        self.current_state = Node(create_initial_board(size), size) # create board with the wanted size
+        self.current_node = Node(create_initial_board(size), size) # create board with the wanted size
         self.interface = GameInterface(size)
         self.game_state = GameState.PLAY
         self.play_state = PlayState.PLAYER_A_CHOOSING
@@ -25,8 +25,7 @@ class Game:
         """
         while self.game_state != GameState.EXIT:
             self.process_events()
-
-            self.interface.draw_background()
+            self.interface.draw_node(self.current_node.board)
 
 
     def process_events(self):
