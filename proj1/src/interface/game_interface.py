@@ -61,10 +61,17 @@ class GameInterface:
         return event_queue
 
 
-    def draw_node(self):
+    def draw_node(self, board):
         """
         Method to draw a node and its board on the pygame interface.
         """
+        self.draw_background()
+
+
+
+
+
+
         # TODO: draw board
 
 
