@@ -1,5 +1,3 @@
-
-
 class Node:
     """
     Class used to represent each board state/node.
