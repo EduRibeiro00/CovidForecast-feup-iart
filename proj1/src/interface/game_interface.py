@@ -22,7 +22,8 @@ class GameInterface:
 
         self.screen = pygame.display.set_mode([self.screen_width, self.screen_height])
         pygame.display.set_caption("Neutron")
-        # TODO: fazer depender o tamanho do ecra do board size
+
+
 
 
     def draw_background(self):

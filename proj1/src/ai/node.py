@@ -11,6 +11,13 @@ class Node:
         self.parent = None
 
 
+    def get_board(self):
+        """
+        Method that returns the current board.
+        """
+        return self.board
+
+
     def set_parent(self, parent):
         """
         Function to set the parent of the state.
