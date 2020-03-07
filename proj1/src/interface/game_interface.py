@@ -1,18 +1,16 @@
 import pygame
+import os
 from .colors import Colors
-
-# screen dimensions
 from .square import Square
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 500
+# screen and board dimensions
 SQUARE_SIZE = 70
 
 class GameInterface:
     """
     Class representing the interface (interface + controller) of the game.
     """
-    def __init__(self, board_size, board):
+    def __init__(self, board_size):
         """
         Constructor of the class.
         """
@@ -24,28 +22,36 @@ class GameInterface:
         pygame.display.set_caption("Neutron")
 
         self.load_img_resources()
-        self.init_board_squares(board)
+        self.init_board_squares()
 
 
-    def init_board_squares(self, board):
+    def init_board_squares(self):
         """
         Method that constructs and initializes the board squares.
         """
         self.squares = []
 
+        cnt = 0
         for row_num in range(self.board_size):
             for col_num in range(self.board_size):
-                self.squares.append(Square(row_num, col_num))
+                if cnt % 2 == 0:
+                    color = Colors.SQUARE_COLOR_1.value
+                else:
+                    color = Colors.SQUARE_COLOR_2.value
 
-        self.update_interface_board(board)
+                self.squares.append(Square(row_num, col_num, color))
+                cnt += 1
 
 
     def load_img_resources(self):
         """
         Methods that loads and saves the sprites for the game.
         """
-        self.white_piece = pygame.image.load('')
-
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        self.black_soldier_img = pygame.image.load(current_dir + "/../../res/pawn_black.png")
+        self.white_soldier_img = pygame.image.load(current_dir + "/../../res/pawn_white.png")
+        self.neutron_img = pygame.image.load(current_dir + "/../../res/neutron.png")
+        # TODO: bolinha verde para indicar que a casa e valida para se fazer um move quando o humano clica numa peça
 
 
     def get_square_in_coords(self, x, y):
@@ -66,31 +72,15 @@ class GameInterface:
         for x in range(self.board_size):
             for y in range(self.board_size):
                 board_cell = board[x][y]
-
-
-
-
-
-    def draw_background(self):
-        """
-        Method that allows to draw the checkered background board onto the screen.
-        """
-        self.screen.fill(Colors.BACKGROUND_COLOR.value) # fill the screen with black
-
-        cnt = 0
-        for i in range(self.board_size):
-            for z in range(self.board_size):
-                # check if current loop value is even
-                if cnt % 2 == 0:
-                    pygame.draw.rect(self.screen, Colors.SQUARE_COLOR_1.value, [(self.square_size * z) + 40, (self.square_size * i) + 50, self.square_size, self.square_size])
-                else:
-                    pygame.draw.rect(self.screen, Colors.SQUARE_COLOR_2.value, [(self.square_size * z) + 40, (self.square_size * i) + 50, self.square_size, self.square_size])
-                cnt += 1
-
-        # Add a nice boarder
-        pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [40, 50, self.board_size * self.square_size, self.board_size * self.square_size], 1)
-        pygame.display.flip()
-
+                board_square = self.get_square_in_coords(x, y)
+                if board_cell == 'W':
+                    board_square.set_piece(self.white_soldier_img)
+                elif board_cell == 'B':
+                    board_square.set_piece(self.black_soldier_img)
+                elif board_cell == 'N':
+                    board_square.set_piece(self.neutron_img)
+                elif board_cell == ' ':
+                    board_square.set_piece(None)
 
 
     def watch_for_events(self):
@@ -107,12 +97,21 @@ class GameInterface:
         return event_queue
 
 
-    def draw_node(self, board):
+    def draw_board(self, board):
         """
         Method to draw a node and its board on the pygame interface.
         """
-        self.draw_background()
-        # TODO: draw board
+        self.update_interface_board(board)
+        self.screen.fill(Colors.BACKGROUND_COLOR.value)  # fill the screen with black
+
+        # draw all squares
+        for square in self.squares:
+            square.draw_square(self.screen, SQUARE_SIZE)
+
+        # Add a nice border
+        pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [40, 50, self.board_size * SQUARE_SIZE, self.board_size * SQUARE_SIZE], 4)
+
+        pygame.display.flip()
 
 
     def exit(self):

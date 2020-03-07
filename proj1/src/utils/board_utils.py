@@ -1,4 +1,4 @@
-def create_initial_board(size, white='W', black='B', neutron='N', blank=' '):
+def create_initial_board(size):
     """
     Function that creates and returns the initial Neutron board with the referred size.
     """
@@ -7,6 +7,11 @@ def create_initial_board(size, white='W', black='B', neutron='N', blank=' '):
 
     board = []
     empty_rows = (size - 3) // 2
+
+    white = 'W'
+    black = 'B'
+    neutron = 'N'
+    blank = ' '
 
     # black line
     board.append([black] * size)
