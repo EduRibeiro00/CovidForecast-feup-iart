@@ -14,7 +14,7 @@ class Game:
         """
         self.current_player = 'white' # white player starts first
         self.current_node = Node(create_initial_board(size), size) # create board with the wanted size
-        self.interface = GameInterface(size)
+        self.interface = GameInterface(size, self.current_node.get_board())
         self.game_state = GameState.PLAY
         self.play_state = PlayState.PLAYER_A_CHOOSING
 
