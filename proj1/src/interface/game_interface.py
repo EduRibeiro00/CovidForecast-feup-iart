@@ -20,7 +20,6 @@ class GameInterface:
         self.screen_height = SQUARE_SIZE * self.board_size + 100
         self.screen = pygame.display.set_mode([self.screen_width, self.screen_height])
         pygame.display.set_caption("Neutron")
-
         self.load_img_resources()
         self.init_board_squares()
 
@@ -98,7 +97,6 @@ class GameInterface:
 
         return event_queue
 
-
     def draw_board(self, board):
         """
         Method to draw a node and its board on the pygame interface.
@@ -115,17 +113,16 @@ class GameInterface:
 
         pygame.display.flip()
 
-
     def check_collision(self, mouse_x, mouse_y):
+        """
+             Method to check if a player has clicked the mouse and selected any of the squares
+        """
 
         for square in self.squares:
-            square.pressed_mouse_button_square(SQUARE_SIZE, mouse_x, mouse_y)
+            if square.collision(SQUARE_SIZE, mouse_x, mouse_y):
+                return square
 
-
-
-
-
-
+        return None
 
     def exit(self):
         """

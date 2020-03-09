@@ -26,7 +26,7 @@ class Square:
         """
         return self.piece
 
-    def pressed_mouse_button_square(self, square_size, mouse_x, mouse_y):
+    def collision(self, square_size, mouse_x, mouse_y):
 
         x1 = square_size * self.x + 40
         y1 = square_size * self.y + 50
