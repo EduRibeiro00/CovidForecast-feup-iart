@@ -26,12 +26,21 @@ class Square:
         """
         return self.piece
 
+    def pressed_mouse_button_square(self, square_size, mouse_x, mouse_y):
+
+        x1 = square_size * self.x + 50
+        y1 = square_size * self.y + 40
+        x2 = square_size * self.x + 50 + square_size
+        y2 = square_size * self.y + 40 + square_size
+
+
+
 
     def draw_square(self, screen, square_size):
         """
         Method that draws on the screen the board square (and its piece if any)
         """
-        pygame.draw.rect(screen, self.color, [(square_size * self.y) + 40, (square_size * self.x) + 50, square_size, square_size])
+        pygame.draw.rect(screen, self.color, [(square_size * self.x) + 40, (square_size * self.y) + 50, square_size, square_size])
 
         if self.piece is not None:
-            screen.blit(self.piece, ((square_size * self.y) + 40, (square_size * self.x) + 50))
+            screen.blit(self.piece, ((square_size * self.x) + 40, (square_size * self.y) + 50))

@@ -39,7 +39,7 @@ class GameInterface:
                 else:
                     color = Colors.SQUARE_COLOR_2.value
 
-                self.squares.append(Square(row_num, col_num, color))
+                self.squares.append(Square(col_num, row_num, color))
                 cnt += 1
 
 
@@ -92,6 +92,8 @@ class GameInterface:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 event_queue.append('EVENT_QUIT')
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                event_queue.append('EVENT_MOUSEBUTTONDOWN')
             # TODO: ver os outros eventos
 
         return event_queue
@@ -112,6 +114,16 @@ class GameInterface:
         pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [40, 50, self.board_size * SQUARE_SIZE, self.board_size * SQUARE_SIZE], 4)
 
         pygame.display.flip()
+
+
+    #def check_collision(self, mouse_coordinates):
+
+
+        #for square in self.squares:
+
+
+
+
 
 
     def exit(self):

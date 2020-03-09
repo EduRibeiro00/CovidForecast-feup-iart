@@ -3,6 +3,7 @@ from utils.board_utils import create_initial_board
 from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
+import pygame, sys
 
 class Game:
     """
@@ -16,7 +17,7 @@ class Game:
         self.current_board = create_initial_board(size) # create board with the wanted size
         self.interface = GameInterface(size)
         self.game_state = GameState.PLAY
-        self.play_state = PlayState.PLAYER_A_CHOOSING
+        self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
 
 
     def run(self):
@@ -37,8 +38,21 @@ class Game:
         for event in event_queue:
             if event == 'EVENT_QUIT': # quit the game
                 self.game_state = GameState.EXIT
+            elif event == 'EVENT_MOUSEBUTTONDOWN':
+                if self.game_state == GameState.PLAY:
+                    #mouse coordinates
+
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    mouse = pygame.mouse.get_pos()
+                    #self.interface.checkColisions(mouse_x, mouse_y)
+                    print(mouse)
+
+
+
+
 
             # TODO: processar os outros eventos
+
 
 
 
