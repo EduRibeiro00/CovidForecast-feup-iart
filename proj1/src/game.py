@@ -43,9 +43,8 @@ class Game:
                     #mouse coordinates
 
                     mouse_x, mouse_y = pygame.mouse.get_pos()
-                    mouse = pygame.mouse.get_pos()
-                    #self.interface.checkColisions(mouse_x, mouse_y)
-                    print(mouse)
+                    self.interface.check_collision(mouse_x, mouse_y)
+
 
 
 

@@ -28,10 +28,16 @@ class Square:
 
     def pressed_mouse_button_square(self, square_size, mouse_x, mouse_y):
 
-        x1 = square_size * self.x + 50
-        y1 = square_size * self.y + 40
-        x2 = square_size * self.x + 50 + square_size
-        y2 = square_size * self.y + 40 + square_size
+        x1 = square_size * self.x + 40
+        y1 = square_size * self.y + 50
+        x2 = square_size * self.x + 40 + square_size
+        y2 = square_size * self.y + 50 + square_size
+
+        if  x1 <= mouse_x <= x2 and y1 <= mouse_y <= y2:
+            print("Tocou na peça " + "(" + str(self.x) + "," + str(self.y) + ")")
+            return True
+        else:
+            return False
 
 
 

@@ -116,10 +116,11 @@ class GameInterface:
         pygame.display.flip()
 
 
-    #def check_collision(self, mouse_coordinates):
+    def check_collision(self, mouse_x, mouse_y):
 
+        for square in self.squares:
+            square.pressed_mouse_button_square(SQUARE_SIZE, mouse_x, mouse_y)
 
-        #for square in self.squares:
 
 
 
