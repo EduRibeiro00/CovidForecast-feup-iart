@@ -27,7 +27,9 @@ class Square:
         return self.piece
 
     def collision(self, square_size, mouse_x, mouse_y):
-
+        """
+        Method that detects if a mouse click was inside the square.
+        """
         x1 = square_size * self.x + 40
         y1 = square_size * self.y + 50
         x2 = square_size * self.x + 40 + square_size
@@ -38,8 +40,6 @@ class Square:
             return True
         else:
             return False
-
-
 
 
     def draw_square(self, screen, square_size):

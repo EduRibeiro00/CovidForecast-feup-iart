@@ -1,11 +1,8 @@
-from ai.node import Node
-from utils.board_utils import create_initial_board
+from utils.board_utils import *
 from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
-from interface.colors import Colors
-import pygame, sys
-
+import pygame
 
 class Game:
     """
@@ -15,13 +12,10 @@ class Game:
         """
         Constructor of the class.
         """
-        self.current_player = 'white' # white player starts first
         self.current_board = create_initial_board(size) # create board with the wanted size
         self.interface = GameInterface(size)
         self.game_state = GameState.PLAY
         self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
-        self.player_A_soldier = 'W'
-        self.player_B_soldier = 'B'
         self.selected_piece_x = None
         self.selected_piece_y = None
 
@@ -41,76 +35,78 @@ class Game:
         event_queue = self.interface.watch_for_events()  # get events from pygame
 
         for event in event_queue:
-            if event == 'EVENT_QUIT': # quit the game
+            # quit the game
+            if event == 'EVENT_QUIT':
                 self.game_state = GameState.EXIT
+
+            # if the mouse button was pressed
             elif event == 'EVENT_MOUSEBUTTONDOWN':
-                if self.game_state == GameState.PLAY:
-                    # mouse coordinates
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    square = self.interface.check_collision(mouse_x, mouse_y)
-
-                    if square is not None:
-
-                        # represents the columns
-                        x = square.x
-                        # represents the rows
-                        y = square.y
-                        if self.play_state == PlayState.PLAYER_A_CHOOSING_SOLDIER:
-                            if self.current_board[y][x] == self.player_A_soldier:
-                                self.selected_piece_x = x
-                                self.selected_piece_y = y
-                                self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
-
-                        elif self.play_state == PlayState.PLAYER_A_MOVING_SOLDIER:
-                            if self.current_board[y][x] == ' ':
-                                self.current_board[self.selected_piece_y][self.selected_piece_x] = " "
-                                self.current_board[y][x] = self.player_A_soldier
-                                # put the condition in case it is the first play of the game
-                                self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
-
-                        elif self.play_state == PlayState.PLAYER_A_CHOOSING_NEUTRON:
-                            if self.current_board[y][x] == 'N':
-                                self.selected_piece_x = x
-                                self.selected_piece_y = y
-                                self.play_state = PlayState.PLAYER_A_MOVING_NEUTRON
-
-                        elif self.play_state == PlayState.PLAYER_A_MOVING_NEUTRON:
-                            if self.current_board[y][x] == " ":
-                                self.current_board[self.selected_piece_y][self.selected_piece_x] = " "
-                                self.current_board[y][x] = 'N'
-                                self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
-
-                        elif self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
-                            if self.current_board[y][x] == self.player_B_soldier:
-                                self.selected_piece_x = x
-                                self.selected_piece_y = y
-                                self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
-
-                        elif self.play_state == PlayState.PLAYER_B_MOVING_SOLDIER:
-                            if self.current_board[y][x] == ' ':
-                                self.current_board[self.selected_piece_y][self.selected_piece_x] = " "
-                                self.current_board[y][x] = self.player_B_soldier
-                                self.play_state = PlayState.PLAYER_B_MOVING_NEUTRON
-
-                        elif self.play_state == PlayState.PLAYER_B_MOVING_NEUTRON:
-                            if self.current_board[y][x] == 'N':
-                                self.selected_piece_x = x
-                                self.selected_piece_y = y
-                                self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
-
-                        elif self.play_state == PlayState.PLAYER_B_CHOOSING_NEUTRON:
-                            if self.current_board[y][x] == " ":
-                                self.current_board[self.selected_piece_y][self.selected_piece_x] = " "
-                                self.current_board[y][x] = 'N'
-                                self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
-
-
-
-
+                self.handle_mouse_event()
 
             # TODO: processar os outros eventos
 
 
+    def handle_mouse_event(self):
+        """
+        Method that handles all the events coming from the mouse.
+        """
+        if self.game_state == GameState.PLAY:
+            # mouse coordinates
+            square = self.interface.check_collision()
+
+            if square is not None:
+                # represents the columns
+                x = square.x
+                # represents the rows
+                y = square.y
+                if self.play_state == PlayState.PLAYER_A_CHOOSING_SOLDIER:
+                    if self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
+                        self.selected_piece_x = x
+                        self.selected_piece_y = y
+                        self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
+
+                elif self.play_state == PlayState.PLAYER_A_MOVING_SOLDIER:
+                    if self.current_board[y][x] == BLANK_SPACE_CHAR:
+                        self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
+                        self.current_board[y][x] = PLAYER_A_SOLDIER_CHAR
+                        # put the condition in case it is the first play of the game
+                        self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+
+                elif self.play_state == PlayState.PLAYER_A_CHOOSING_NEUTRON:
+                    if self.current_board[y][x] == NEUTRON_CHAR:
+                        self.selected_piece_x = x
+                        self.selected_piece_y = y
+                        self.play_state = PlayState.PLAYER_A_MOVING_NEUTRON
+
+                elif self.play_state == PlayState.PLAYER_A_MOVING_NEUTRON:
+                    if self.current_board[y][x] == BLANK_SPACE_CHAR:
+                        self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
+                        self.current_board[y][x] = NEUTRON_CHAR
+                        self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
+
+                elif self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
+                    if self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
+                        self.selected_piece_x = x
+                        self.selected_piece_y = y
+                        self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
+
+                elif self.play_state == PlayState.PLAYER_B_MOVING_SOLDIER:
+                    if self.current_board[y][x] == BLANK_SPACE_CHAR:
+                        self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
+                        self.current_board[y][x] = PLAYER_B_SOLDIER_CHAR
+                        self.play_state = PlayState.PLAYER_B_MOVING_NEUTRON
+
+                elif self.play_state == PlayState.PLAYER_B_MOVING_NEUTRON:
+                    if self.current_board[y][x] == NEUTRON_CHAR:
+                        self.selected_piece_x = x
+                        self.selected_piece_y = y
+                        self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+
+                elif self.play_state == PlayState.PLAYER_B_CHOOSING_NEUTRON:
+                    if self.current_board[y][x] == BLANK_SPACE_CHAR:
+                        self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
+                        self.current_board[y][x] = NEUTRON_CHAR
+                        self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
 
 
     def exit(self):

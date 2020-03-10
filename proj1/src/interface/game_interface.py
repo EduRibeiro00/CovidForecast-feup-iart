@@ -113,11 +113,11 @@ class GameInterface:
 
         pygame.display.flip()
 
-    def check_collision(self, mouse_x, mouse_y):
+    def check_collision(self):
         """
-             Method to check if a player has clicked the mouse and selected any of the squares
+        Method to check if a player has clicked the mouse and selected any of the squares
         """
-
+        mouse_x, mouse_y = pygame.mouse.get_pos()
         for square in self.squares:
             if square.collision(SQUARE_SIZE, mouse_x, mouse_y):
                 return square
