@@ -2,7 +2,6 @@ from utils.board_utils import *
 from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
-import pygame
 
 class Game:
     """
