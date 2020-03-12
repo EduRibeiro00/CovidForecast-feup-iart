@@ -50,7 +50,7 @@ class GameInterface:
         self.black_soldier_img = pygame.image.load(current_dir + "/../../res/pawn_black.png")
         self.white_soldier_img = pygame.image.load(current_dir + "/../../res/pawn_white.png")
         self.neutron_img = pygame.image.load(current_dir + "/../../res/neutron.png")
-        # TODO: bolinha verde para indicar que a casa e valida para se fazer um move quando o humano clica numa peça
+        self.green_ball_img = pygame.image.load(current_dir + "/../../res/green_ball.png")
 
 
     def get_square_in_coords(self, x, y):
@@ -78,7 +78,7 @@ class GameInterface:
                     board_square.set_piece(self.black_soldier_img)
                 elif board_cell == 'N':
                     board_square.set_piece(self.neutron_img)
-                elif board_cell == ' ':
+                elif board_cell == ' ' and board_square.piece != self.green_ball_img:
                     board_square.set_piece(None)
 
 
@@ -123,6 +123,27 @@ class GameInterface:
                 return square
 
         return None
+
+
+    def highlight_squares(self, coords):
+        """
+        Method that allows square highlighting for possible moves
+        """
+        for coord in coords:
+            print(coord)
+            y, x = coord  # DON'T KNOW WHY IT HAS TO BE LIKE THIS...........
+            board_square = self.get_square_in_coords(x, y)
+            board_square.set_piece(self.green_ball_img)
+
+
+    def reset_highlight(self):
+        """
+        Method that removes highlighting from squares
+        """
+        for square in self.squares:
+            if square.piece == self.green_ball_img:
+                square.piece = None
+
 
     def exit(self):
         """
