@@ -113,7 +113,7 @@ class Game:
 
     def possible_moves(self, x, y):
         """
-        Method that calculates all possible movements of a given piece
+        Method that calculates all possible movements of a given piece.
         """
         possibilities = []
         
