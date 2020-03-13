@@ -16,7 +16,7 @@ class GameInterface:
         """
         pygame.init()
         self.board_size = board_size
-        self.screen_width = SQUARE_SIZE * self.board_size + 200
+        self.screen_width = SQUARE_SIZE * self.board_size + 100
         self.screen_height = SQUARE_SIZE * self.board_size + 100
         self.screen = pygame.display.set_mode([self.screen_width, self.screen_height])
         pygame.display.set_caption("Neutron")
@@ -109,7 +109,7 @@ class GameInterface:
             square.draw_square(self.screen, SQUARE_SIZE)
 
         # Add a nice border
-        pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [40, 50, self.board_size * SQUARE_SIZE, self.board_size * SQUARE_SIZE], 4)
+        pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [50, 50, self.board_size * SQUARE_SIZE, self.board_size * SQUARE_SIZE], 4)
         pygame.display.flip()
 
 
