@@ -50,14 +50,14 @@ class GameInterface:
         self.black_soldier_img = pygame.image.load(current_dir + "/../../res/pawn_black.png")
         self.white_soldier_img = pygame.image.load(current_dir + "/../../res/pawn_white.png")
         self.neutron_img = pygame.image.load(current_dir + "/../../res/neutron.png")
-        # TODO: bolinha verde para indicar que a casa e valida para se fazer um move quando o humano clica numa peça
+        self.green_ball_img = pygame.image.load(current_dir + "/../../res/green_ball.png")
 
 
     def get_square_in_coords(self, x, y):
         """
         Method that, given the x-y coordinates of a board position, returns its square.
         """
-        pos = (x * self.board_size) + y
+        pos = (y * self.board_size) + x
         if pos >= len(self.squares):
             return None
 
@@ -68,9 +68,9 @@ class GameInterface:
         """
         Method that receives the board and updates the squares with their pieces.
         """
-        for x in range(self.board_size):
-            for y in range(self.board_size):
-                board_cell = board[x][y]
+        for y in range(self.board_size):
+            for x in range(self.board_size):
+                board_cell = board[y][x]
                 board_square = self.get_square_in_coords(x, y)
                 if board_cell == 'W':
                     board_square.set_piece(self.white_soldier_img)
@@ -78,7 +78,7 @@ class GameInterface:
                     board_square.set_piece(self.black_soldier_img)
                 elif board_cell == 'N':
                     board_square.set_piece(self.neutron_img)
-                elif board_cell == ' ':
+                elif board_cell == ' ' and board_square.piece != self.green_ball_img:
                     board_square.set_piece(None)
 
 
@@ -93,9 +93,9 @@ class GameInterface:
                 event_queue.append('EVENT_QUIT')
             if event.type == pygame.MOUSEBUTTONDOWN:
                 event_queue.append('EVENT_MOUSEBUTTONDOWN')
-            # TODO: ver os outros eventos
 
         return event_queue
+
 
     def draw_board(self, board):
         """
@@ -110,8 +110,8 @@ class GameInterface:
 
         # Add a nice border
         pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [40, 50, self.board_size * SQUARE_SIZE, self.board_size * SQUARE_SIZE], 4)
-
         pygame.display.flip()
+
 
     def check_collision(self):
         """
@@ -123,6 +123,26 @@ class GameInterface:
                 return square
 
         return None
+
+
+    def highlight_squares(self, coords):
+        """
+        Method that allows square highlighting for possible moves
+        """
+        for coord in coords:
+            x, y = coord
+            board_square = self.get_square_in_coords(x, y)
+            board_square.set_piece(self.green_ball_img)
+
+
+    def reset_highlight(self):
+        """
+        Method that removes highlighting from squares
+        """
+        for square in self.squares:
+            if square.piece == self.green_ball_img:
+                square.piece = None
+
 
     def exit(self):
         """

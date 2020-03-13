@@ -44,8 +44,6 @@ class Game:
             elif event == 'EVENT_MOUSEBUTTONDOWN':
                 self.handle_mouse_event()
 
-            # TODO: processar os outros eventos
-
 
     def handle_mouse_event(self):
         """
@@ -65,49 +63,72 @@ class Game:
                         self.selected_piece_x = x
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
+                        self.highlights = self.possible_moves(x, y)
+                        self.interface.highlight_squares(self.highlights)
 
                 elif self.play_state == PlayState.PLAYER_A_MOVING_SOLDIER:
-                    if self.current_board[y][x] == BLANK_SPACE_CHAR:
+                    if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_A_SOLDIER_CHAR
-                        # put the condition in case it is the first play of the game
-                        self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+                        self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+                        self.interface.reset_highlight()
+                    elif self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
+                        self.selected_piece_x = x
+                        self.selected_piece_y = y
+                        self.interface.reset_highlight()                        
+                        self.highlights = self.possible_moves(x, y)
+                        self.interface.highlight_squares(self.highlights)                        
 
                 elif self.play_state == PlayState.PLAYER_A_CHOOSING_NEUTRON:
                     if self.current_board[y][x] == NEUTRON_CHAR:
                         self.selected_piece_x = x
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_A_MOVING_NEUTRON
+                        self.highlights = self.possible_moves(x, y)
+                        self.interface.highlight_squares(self.highlights)                        
 
                 elif self.play_state == PlayState.PLAYER_A_MOVING_NEUTRON:
-                    if self.current_board[y][x] == BLANK_SPACE_CHAR:
+                    if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = NEUTRON_CHAR
-                        self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
+                        self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
+                        self.interface.reset_highlight()
 
                 elif self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
                     if self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
                         self.selected_piece_x = x
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
+                        self.highlights = self.possible_moves(x, y)
+                        self.interface.highlight_squares(self.highlights)
 
                 elif self.play_state == PlayState.PLAYER_B_MOVING_SOLDIER:
-                    if self.current_board[y][x] == BLANK_SPACE_CHAR:
+                    if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_B_SOLDIER_CHAR
-                        self.play_state = PlayState.PLAYER_B_MOVING_NEUTRON
+                        self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+                        self.interface.reset_highlight()
+                    elif self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
+                        self.selected_piece_x = x
+                        self.selected_piece_y = y
+                        self.interface.reset_highlight()                        
+                        self.highlights = self.possible_moves(x, y)
+                        self.interface.highlight_squares(self.highlights)    
 
-                elif self.play_state == PlayState.PLAYER_B_MOVING_NEUTRON:
+                elif self.play_state == PlayState.PLAYER_B_CHOOSING_NEUTRON:
                     if self.current_board[y][x] == NEUTRON_CHAR:
                         self.selected_piece_x = x
                         self.selected_piece_y = y
-                        self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+                        self.play_state = PlayState.PLAYER_B_MOVING_NEUTRON
+                        self.highlights = self.possible_moves(x, y)
+                        self.interface.highlight_squares(self.highlights)               
 
-                elif self.play_state == PlayState.PLAYER_B_CHOOSING_NEUTRON:
-                    if self.current_board[y][x] == BLANK_SPACE_CHAR:
+                elif self.play_state == PlayState.PLAYER_B_MOVING_NEUTRON:
+                    if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = NEUTRON_CHAR
-                        self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
+                        self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
+                        self.interface.reset_highlight()                  
 
 
 
