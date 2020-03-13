@@ -44,8 +44,6 @@ class Game:
             elif event == 'EVENT_MOUSEBUTTONDOWN':
                 self.handle_mouse_event()
 
-            # TODO: processar os outros eventos
-
 
     def handle_mouse_event(self):
         """
@@ -72,7 +70,6 @@ class Game:
                     if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_A_SOLDIER_CHAR
-                        # put the condition in case it is the first play of the game
                         self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
                         self.interface.reset_highlight()
 
@@ -125,7 +122,7 @@ class Game:
 
     def possible_moves(self, x, y):
         """
-        Method that calculates all possible movements of a given piece
+        Method that calculates all possible movements of a given piece.
         """
         possibilities = []
         

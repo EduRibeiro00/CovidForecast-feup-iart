@@ -57,7 +57,7 @@ class GameInterface:
         """
         Method that, given the x-y coordinates of a board position, returns its square.
         """
-        pos = (x * self.board_size) + y
+        pos = (y * self.board_size) + x
         if pos >= len(self.squares):
             return None
 
@@ -68,9 +68,9 @@ class GameInterface:
         """
         Method that receives the board and updates the squares with their pieces.
         """
-        for x in range(self.board_size):
-            for y in range(self.board_size):
-                board_cell = board[x][y]
+        for y in range(self.board_size):
+            for x in range(self.board_size):
+                board_cell = board[y][x]
                 board_square = self.get_square_in_coords(x, y)
                 if board_cell == 'W':
                     board_square.set_piece(self.white_soldier_img)
@@ -93,9 +93,9 @@ class GameInterface:
                 event_queue.append('EVENT_QUIT')
             if event.type == pygame.MOUSEBUTTONDOWN:
                 event_queue.append('EVENT_MOUSEBUTTONDOWN')
-            # TODO: ver os outros eventos
 
         return event_queue
+
 
     def draw_board(self, board):
         """
@@ -110,8 +110,8 @@ class GameInterface:
 
         # Add a nice border
         pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [40, 50, self.board_size * SQUARE_SIZE, self.board_size * SQUARE_SIZE], 4)
-
         pygame.display.flip()
+
 
     def check_collision(self):
         """
@@ -130,8 +130,7 @@ class GameInterface:
         Method that allows square highlighting for possible moves
         """
         for coord in coords:
-            print(coord)
-            y, x = coord  # DON'T KNOW WHY IT HAS TO BE LIKE THIS...........
+            x, y = coord
             board_square = self.get_square_in_coords(x, y)
             board_square.set_piece(self.green_ball_img)
 
