@@ -72,7 +72,7 @@ class Square:
 
 
             if self.blinking:
-                pygame.draw.rect(screen, (0, 255, 0), [(square_size * self.x) + 50, (square_size * self.y) + 50, square_size- 2, square_size- 2], 4)
+                pygame.draw.rect(screen, Colors.SELECTED_SQUARE_COLOR.value, [(square_size * self.x) + 50, (square_size * self.y) + 50, square_size- 2, square_size- 2], 4)
 
         if self.piece is not None:
             screen.blit(self.piece, ((square_size * self.x) + 50, (square_size * self.y) + 50))
