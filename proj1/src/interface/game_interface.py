@@ -24,7 +24,6 @@ class GameInterface:
         self.init_board_squares()
 
 
-
     def init_board_squares(self):
         """
         Method that constructs and initializes the board squares.
@@ -43,9 +42,10 @@ class GameInterface:
                 cnt += 1
 
 
+
     def load_img_resources(self):
         """
-        Methods that loads and saves the sprites for the game.
+        Methods that loads and saves the sprites for the game, and calculates attributes related to those sprites
         """
         current_dir = os.path.dirname(os.path.realpath(__file__))
         self.black_soldier_img = pygame.image.load(current_dir + "/../../res/pawn_black.png")
@@ -107,7 +107,6 @@ class GameInterface:
         self.update_interface_board(board)
         self.screen.fill(Colors.BACKGROUND_COLOR.value)  # fill the screen with black
 
-
         # Add a nice border
         # It should be pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [46, 46, self.board_size * SQUARE_SIZE + 4, self.board_size * SQUARE_SIZE + 4], 4)
         # but for some reason when displaying it appears wrong
@@ -119,11 +118,9 @@ class GameInterface:
 
 
 
-
-
     def check_collision(self):
         """
-        Method to check if a player has clicked the mouse and selected any of the squares
+        Method to check if a player has clicked the mouse and selected any of the squares.
         """
         mouse_x, mouse_y = pygame.mouse.get_pos()
         for square in self.squares:
@@ -135,7 +132,7 @@ class GameInterface:
 
     def highlight_squares(self, coords):
         """
-        Method that allows square highlighting for possible moves
+        Method that allows square highlighting for possible moves.
         """
         for coord in coords:
             x, y = coord
@@ -145,7 +142,7 @@ class GameInterface:
 
     def reset_highlight(self):
         """
-        Method that removes highlighting from squares
+        Method that removes highlighting from squares.
         """
         for square in self.squares:
             if square.piece == self.green_ball_img:
@@ -154,20 +151,23 @@ class GameInterface:
 
     def set_selected_square(self, x, y):
         """
-            Method that make a selected square start to blink if it has a piece
+        Method that make a selected square start to blink if it has a piece.
         """
         self.get_square_in_coords(x, y).selected = True
 
+
     def unset_selected_square(self, x, y):
         """
-            Method that make a selected square stop to blink if it has a piece
+        Method that make a selected square stop to blink if it has a piece.
         """
         self.get_square_in_coords(x, y).selected = False
 
 
-    def display_turn_information(self, state):
-
-        white = (255, 255, 255)
+    def display_turn_information(self):
+        """
+        Method that displays the turn information, indicating the who has the active turn and
+        which type of piece they should move.
+        """
         green = (0, 255, 0)
         blue = (0, 0, 128)
 
@@ -205,8 +205,11 @@ class GameInterface:
         self.screen.blit(move_piece_text, move_piece_textRect)
 
 
-
-
+    def flip(self):
+        """
+        Wrapper function to flip the screen.
+        """
+        pygame.display.flip()
 
 
     def exit(self):

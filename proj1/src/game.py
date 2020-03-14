@@ -2,7 +2,7 @@ from utils.board_utils import *
 from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
-import pygame
+
 
 class Game:
     """
@@ -20,6 +20,7 @@ class Game:
         self.selected_piece_x = None
         self.selected_piece_y = None
 
+
     def run(self):
         """
         Main method of the game class. Contains the main game cycle.
@@ -28,8 +29,8 @@ class Game:
             self.process_events()
             self.interface.draw_board(self.current_board)
             self.interface.display_turn_information(self.play_state)
-            pygame.display.flip()
 
+            self.interface.flip()
 
 
     def process_events(self):
@@ -48,6 +49,7 @@ class Game:
                 self.handle_mouse_event()
 
 
+
     def handle_mouse_event(self):
         """
         Method that handles all the events coming from the mouse.
@@ -55,8 +57,6 @@ class Game:
         if self.game_state == GameState.PLAY:
             # mouse coordinates
             square = self.interface.check_collision()
-
-
 
             if square is not None:
                 # represents the columns
