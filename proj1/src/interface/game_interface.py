@@ -2,6 +2,7 @@ import pygame
 import os
 from .colors import Colors
 from .square import Square
+from state.play_state import PlayState
 
 # screen and board dimensions
 SQUARE_SIZE = 70
@@ -166,7 +167,11 @@ class GameInterface:
 
 
     def display_turn_information(self, state):
+        """
+            Method that displays the turn information on the screen
+        """
 
+        # NEEDS TO BE FIXED I CREATED MACRO BUT FOR SOME REASON THEY ARE NOT WORKING WHEN DOING FONT.RENDER
         white = (255, 255, 255)
         green = (0, 255, 0)
         blue = (0, 0, 128)
@@ -177,7 +182,7 @@ class GameInterface:
         # 2nd parameter is size of the font
         font = pygame.font.Font('freesansbold.ttf', 17)
 
-        # create a text suface object,
+        # create a text surface object,
         # on which text is drawn on it.
         current_player_text = font.render('Current player', True, green, blue)
 
@@ -190,19 +195,36 @@ class GameInterface:
         move_piece_textRect = current_player_text.get_rect()
 
         # set the center of the rectangular object.
-        current_player_textRect.center = (self.screen_width - 100 , self.screen_height // 3)
-
+        current_player_textRect.center = (self.screen_width - 100 , self.screen_height // 4)
+        move_piece_textRect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
 
 
         self.screen.blit(current_player_text, current_player_textRect)
-
-        self.screen.blit(self.black_soldier_img, (self.screen_width - 100 - 50, self.screen_height // 3 + 15))
-
-        move_piece_textRect.center = (self.screen_width - 100 , self.screen_height // 3 + self.soldier_height + 50)
-
-        self.screen.blit(self.neutron_img, (self.screen_width - 100 - 50, self.screen_height // 3 + self.soldier_height * 2 ))
-
         self.screen.blit(move_piece_text, move_piece_textRect)
+
+        if state == PlayState.PLAYER_A_CHOOSING_SOLDIER or state == PlayState.PLAYER_A_MOVING_SOLDIER:
+            current_player_image = self.white_soldier_img
+            move_piece_image = self.white_soldier_img
+
+        elif state == PlayState.PLAYER_A_CHOOSING_NEUTRON or state == PlayState.PLAYER_A_MOVING_NEUTRON:
+            current_player_image = self.white_soldier_img
+            move_piece_image = self.neutron_img
+
+
+        elif state == PlayState.PLAYER_B_CHOOSING_SOLDIER or state == PlayState.PLAYER_B_MOVING_SOLDIER:
+            current_player_image = self.black_soldier_img
+            move_piece_image = self.black_soldier_img
+
+
+        elif state == PlayState.PLAYER_B_CHOOSING_NEUTRON or state == PlayState.PLAYER_B_MOVING_NEUTRON:
+            current_player_image = self.black_soldier_img
+            move_piece_image = self.neutron_img
+
+
+        self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
+        self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
+
+
 
 
 
