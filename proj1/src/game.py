@@ -53,18 +53,16 @@ class Game:
         Method that handles all the events coming from the mouse.
         """
         if self.game_state == GameState.PLAY:
+
             # mouse coordinates
             square = self.interface.check_collision()
-
-
-
+            print(self.play_state)
             if square is not None:
                 # represents the columns
                 x = square.x
                 # represents the rows
                 y = square.y
                 if self.play_state == PlayState.PLAYER_A_CHOOSING_SOLDIER:
-
                     if self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
                         self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
@@ -79,7 +77,11 @@ class Game:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_A_SOLDIER_CHAR
-                        self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+                        game_over_bool, final_state = self.check_is_final_state()
+                        if game_over_bool:
+                            self.play_state = final_state
+                        else:
+                            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
                         self.interface.reset_highlight()
 
                     elif self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
@@ -105,7 +107,11 @@ class Game:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = NEUTRON_CHAR
-                        self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
+                        game_over_bool, final_state = self.check_is_final_state()
+                        if game_over_bool:
+                            self.play_state = final_state
+                        else:
+                            self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
                         self.interface.reset_highlight()
 
                 elif self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
@@ -122,7 +128,11 @@ class Game:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_B_SOLDIER_CHAR
-                        self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+                        game_over_bool, final_state = self.check_is_final_state()
+                        if game_over_bool:
+                            self.play_state = final_state
+                        else:
+                            self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
                         self.interface.reset_highlight()
                     elif self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
@@ -147,7 +157,11 @@ class Game:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = NEUTRON_CHAR
-                        self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
+                        game_over_bool, final_state = self.check_is_final_state()
+                        if game_over_bool:
+                            self.play_state = final_state
+                        else:
+                            self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
                         self.interface.reset_highlight()                  
 
 
@@ -274,8 +288,44 @@ class Game:
                     possibilities.append(coords)
                     break                                     
 
-        return possibilities                                                                
-                
+        return possibilities
+
+
+    def does_player_B_win(self, neutron_square):
+        if neutron_square.y == self.size - 1:
+            return True
+        return False
+
+    def does_player_A_win(self, neutron_square):
+        if neutron_square.y == 0:
+            return True
+        return False
+
+    def get_neutron_piece(self):
+        for
+
+    def check_is_final_state(self):
+        """
+             Method that calculates all possible movements of a given piece.
+        """
+        neutron_square = self.get_neutron_piece()
+        if self.does_player_A_win(neutron_square):
+            return True , PlayState.PLAYER_A_WINS
+
+        elif self.does_player_B_win(neutron_square):
+            return True, PlayState.PLAYER_B_WINS
+
+        else:
+            possible_moves_neutron = self.possible_moves(neutron_square.x, neutron_square.y)
+            if possible_moves_neutron.__sizeof__() == 0:
+                return True, PlayState.DRAW
+
+        return False, None
+
+
+
+
+
 
 
     def exit(self):
