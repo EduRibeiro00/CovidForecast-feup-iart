@@ -2,7 +2,6 @@ from utils.board_utils import *
 from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
-import pygame
 
 class Game:
     """
@@ -28,8 +27,7 @@ class Game:
             self.process_events()
             self.interface.draw_board(self.current_board)
             self.interface.display_turn_information(self.play_state)
-            pygame.display.flip()
-
+            self.interface.flip()
 
 
     def process_events(self):
@@ -55,8 +53,6 @@ class Game:
         if self.game_state == GameState.PLAY:
             # mouse coordinates
             square = self.interface.check_collision()
-
-
 
             if square is not None:
                 # represents the columns
@@ -275,7 +271,6 @@ class Game:
                     break                                     
 
         return possibilities                                                                
-                
 
 
     def exit(self):

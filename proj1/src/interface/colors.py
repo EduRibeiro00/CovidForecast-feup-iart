@@ -9,6 +9,5 @@ class Colors(enum.Enum):
     SQUARE_COLOR_2 = (107, 170, 117)
     BOARD_BORDER_COLOR = (107, 77, 32)
     SELECTED_SQUARE_COLOR = (0, 255, 0)
-    WHITE_TEXT = (255, 255, 255)
-    GREEN_TEXT = (0, 255, 0)
-    BLUE_TEXT = (0, 0, 128)
+    TEXT_COLOR = (0, 255, 0)
+    TEXT_BACKGROUND_COLOR = (0, 0, 128)

@@ -1,6 +1,8 @@
 import pygame
 import time
 from .colors import Colors
+from .interface_consts import BLINKING_TIME
+
 
 class Square:
     """
@@ -51,32 +53,30 @@ class Square:
 
     def draw_square(self, screen, square_size):
         """
-        Method that draws on the screen the board square (and its piece if any)
+        Method that draws on the screen the board square (and its piece if any).
+        Also takes care of the blinking if the square is selected.
         """
+        # draw square
         pygame.draw.rect(screen, self.color, [(square_size * self.x) + 50, (square_size * self.y) + 50, square_size, square_size])
 
+        # blinking if selected
         if not self.selected:
             self.before = time.time()
         elif self.selected:
-
             self.delta = time.time() - self.before
             self.before = time.time()
             self.time = self.time + self.delta
 
-            if self.time > 0.3:
+            if self.time > BLINKING_TIME:
                 self.time = 0
                 if self.blinking:
                     self.blinking = False
                 else:
                    self.blinking = True
 
-
             if self.blinking:
                 pygame.draw.rect(screen, Colors.SELECTED_SQUARE_COLOR.value, [(square_size * self.x) + 50, (square_size * self.y) + 50, square_size- 2, square_size- 2], 4)
 
+        # draw piece (if any)
         if self.piece is not None:
             screen.blit(self.piece, ((square_size * self.x) + 50, (square_size * self.y) + 50))
-
-
-
-

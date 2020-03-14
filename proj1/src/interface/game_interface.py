@@ -3,9 +3,7 @@ import os
 from .colors import Colors
 from .square import Square
 from state.play_state import PlayState
-
-# screen and board dimensions
-SQUARE_SIZE = 70
+from .interface_consts import SQUARE_SIZE, FONT_SIZE, FONT_FILE
 
 class GameInterface:
     """
@@ -46,7 +44,7 @@ class GameInterface:
 
     def load_img_resources(self):
         """
-        Methods that loads and saves the sprites for the game.
+        Method that loads and saves the sprites for the game, and calculates some attributes related to them.
         """
         current_dir = os.path.dirname(os.path.realpath(__file__))
         self.black_soldier_img = pygame.image.load(current_dir + "/../../res/pawn_black.png")
@@ -119,12 +117,9 @@ class GameInterface:
             square.draw_square(self.screen, SQUARE_SIZE)
 
 
-
-
-
     def check_collision(self):
         """
-        Method to check if a player has clicked the mouse and selected any of the squares
+        Method to check if a player has clicked the mouse and selected any of the squares.
         """
         mouse_x, mouse_y = pygame.mouse.get_pos()
         for square in self.squares:
@@ -136,7 +131,7 @@ class GameInterface:
 
     def highlight_squares(self, coords):
         """
-        Method that allows square highlighting for possible moves
+        Method that allows square highlighting for possible moves.
         """
         for coord in coords:
             x, y = coord
@@ -146,7 +141,7 @@ class GameInterface:
 
     def reset_highlight(self):
         """
-        Method that removes highlighting from squares
+        Method that removes highlighting from squares.
         """
         for square in self.squares:
             if square.piece == self.green_ball_img:
@@ -155,53 +150,52 @@ class GameInterface:
 
     def set_selected_square(self, x, y):
         """
-            Method that make a selected square start to blink if it has a piece
+        Method that makes a selected square start to blink if it has a piece.
         """
         self.get_square_in_coords(x, y).selected = True
 
+
     def unset_selected_square(self, x, y):
         """
-            Method that make a selected square stop to blink if it has a piece
+        Method that makes a selected square stop to blink if it has a piece.
         """
         self.get_square_in_coords(x, y).selected = False
 
 
     def display_turn_information(self, state):
         """
-            Method that displays the turn information on the screen
+        Method that displays the turn information on the screen, like which player has the current turn
+        and what type of piece they should move.
         """
+        font = pygame.font.Font(FONT_FILE, FONT_SIZE)
 
-        # NEEDS TO BE FIXED I CREATED MACRO BUT FOR SOME REASON THEY ARE NOT WORKING WHEN DOING FONT.RENDER
-        white = (255, 255, 255)
-        green = (0, 255, 0)
-        blue = (0, 0, 128)
+        # create a text surface object, on which text is drawn on it.
+        current_player_text = font.render('Current player', True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+        move_piece_text = font.render('Move piece', True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
 
-        # create a font object.
-        # 1st parameter is the font file
-        # which is present in pygame.
-        # 2nd parameter is size of the font
-        font = pygame.font.Font('freesansbold.ttf', 17)
-
-        # create a text surface object,
-        # on which text is drawn on it.
-        current_player_text = font.render('Current player', True, green, blue)
-
-        move_piece_text = font.render('Move piece', True, green, blue)
-
-        # create a rectangular object for the
-        # text surface object
-        current_player_textRect = current_player_text.get_rect()
-
-        move_piece_textRect = current_player_text.get_rect()
+        # create a rectangular object for the text surface object
+        current_player_text_rect = current_player_text.get_rect()
+        move_piece_text_rect = current_player_text.get_rect()
 
         # set the center of the rectangular object.
-        current_player_textRect.center = (self.screen_width - 100 , self.screen_height // 4)
-        move_piece_textRect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
+        current_player_text_rect.center = (self.screen_width - 100 , self.screen_height // 4)
+        move_piece_text_rect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
+
+        self.screen.blit(current_player_text, current_player_text_rect)
+        self.screen.blit(move_piece_text, move_piece_text_rect)
+
+        current_player_image, move_piece_image = self.calc_imgs_turn_info(state)
+
+        self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
+        self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
 
 
-        self.screen.blit(current_player_text, current_player_textRect)
-        self.screen.blit(move_piece_text, move_piece_textRect)
 
+    def calc_imgs_turn_info(self, state):
+        """
+        Method that, given the current state of the game, calculates what are the images that should be
+        displayed in the turn information.
+        """
         if state == PlayState.PLAYER_A_CHOOSING_SOLDIER or state == PlayState.PLAYER_A_MOVING_SOLDIER:
             current_player_image = self.white_soldier_img
             move_piece_image = self.white_soldier_img
@@ -220,15 +214,19 @@ class GameInterface:
             current_player_image = self.black_soldier_img
             move_piece_image = self.neutron_img
 
+        else:
+            current_player_image = None
+            move_piece_image = None
 
-        self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
-        self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
-
-
-
-
+        return current_player_image, move_piece_image
 
 
+
+    def flip(self):
+        """
+        Wrapper function to flip the pygame screen.
+        """
+        pygame.display.flip()
 
 
     def exit(self):
