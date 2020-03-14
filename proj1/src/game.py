@@ -27,6 +27,9 @@ class Game:
         while self.game_state != GameState.EXIT:
             self.process_events()
             self.interface.draw_board(self.current_board)
+            self.interface.display_turn_information(self.play_state)
+            pygame.display.flip()
+
 
 
     def process_events(self):
@@ -52,6 +55,8 @@ class Game:
         if self.game_state == GameState.PLAY:
             # mouse coordinates
             square = self.interface.check_collision()
+
+
 
             if square is not None:
                 # represents the columns
