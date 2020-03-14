@@ -1,4 +1,6 @@
 import pygame
+import time
+from .colors import Colors
 
 class Square:
     """
@@ -12,6 +14,11 @@ class Square:
         self.y = y
         self.color = color
         self.piece = None
+        self.selected = False
+        self.blinking = True
+        self.before = 0
+        self.delta = 0
+        self.time = 0
 
     def set_piece(self, piece):
         """
@@ -48,5 +55,28 @@ class Square:
         """
         pygame.draw.rect(screen, self.color, [(square_size * self.x) + 50, (square_size * self.y) + 50, square_size, square_size])
 
+        if not self.selected:
+            self.before = time.time()
+        elif self.selected:
+
+            self.delta = time.time() - self.before
+            self.before = time.time()
+            self.time = self.time + self.delta
+
+            if self.time > 0.3:
+                self.time = 0
+                if self.blinking:
+                    self.blinking = False
+                else:
+                   self.blinking = True
+
+
+            if self.blinking:
+                pygame.draw.rect(screen, (0, 255, 0), [(square_size * self.x) + 50, (square_size * self.y) + 50, square_size- 2, square_size- 2], 4)
+
         if self.piece is not None:
             screen.blit(self.piece, ((square_size * self.x) + 50, (square_size * self.y) + 50))
+
+
+
+

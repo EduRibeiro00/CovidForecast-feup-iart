@@ -59,7 +59,9 @@ class Game:
                 # represents the rows
                 y = square.y
                 if self.play_state == PlayState.PLAYER_A_CHOOSING_SOLDIER:
+
                     if self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
+                        self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
@@ -67,20 +69,26 @@ class Game:
                         self.interface.highlight_squares(self.highlights)
 
                 elif self.play_state == PlayState.PLAYER_A_MOVING_SOLDIER:
+
                     if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
+                        self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_A_SOLDIER_CHAR
                         self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
                         self.interface.reset_highlight()
+
                     elif self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
+                        self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
+                        self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
                         self.selected_piece_y = y
-                        self.interface.reset_highlight()                        
+                        self.interface.reset_highlight()
                         self.highlights = self.possible_moves(x, y)
                         self.interface.highlight_squares(self.highlights)                        
 
                 elif self.play_state == PlayState.PLAYER_A_CHOOSING_NEUTRON:
                     if self.current_board[y][x] == NEUTRON_CHAR:
+                        self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_A_MOVING_NEUTRON
@@ -89,6 +97,7 @@ class Game:
 
                 elif self.play_state == PlayState.PLAYER_A_MOVING_NEUTRON:
                     if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
+                        self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = NEUTRON_CHAR
                         self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
@@ -96,6 +105,7 @@ class Game:
 
                 elif self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
                     if self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
+                        self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
@@ -104,11 +114,14 @@ class Game:
 
                 elif self.play_state == PlayState.PLAYER_B_MOVING_SOLDIER:
                     if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
+                        self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_B_SOLDIER_CHAR
                         self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
                         self.interface.reset_highlight()
                     elif self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
+                        self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
+                        self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
                         self.selected_piece_y = y
                         self.interface.reset_highlight()                        
@@ -117,6 +130,7 @@ class Game:
 
                 elif self.play_state == PlayState.PLAYER_B_CHOOSING_NEUTRON:
                     if self.current_board[y][x] == NEUTRON_CHAR:
+                        self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_B_MOVING_NEUTRON
@@ -125,6 +139,7 @@ class Game:
 
                 elif self.play_state == PlayState.PLAYER_B_MOVING_NEUTRON:
                     if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
+                        self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = NEUTRON_CHAR
                         self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER

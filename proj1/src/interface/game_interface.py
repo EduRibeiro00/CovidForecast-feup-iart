@@ -104,12 +104,18 @@ class GameInterface:
         self.update_interface_board(board)
         self.screen.fill(Colors.BACKGROUND_COLOR.value)  # fill the screen with black
 
+
+        # Add a nice border
+        # It should be pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [46, 46, self.board_size * SQUARE_SIZE + 4, self.board_size * SQUARE_SIZE + 4], 4)
+        # but for some reason when displaying it appears wrong
+        pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [46, 47, self.board_size * SQUARE_SIZE + 5.9, self.board_size * SQUARE_SIZE + 5.8], 4)
+
         # draw all squares
         for square in self.squares:
             square.draw_square(self.screen, SQUARE_SIZE)
 
-        # Add a nice border
-        pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [50, 50, self.board_size * SQUARE_SIZE, self.board_size * SQUARE_SIZE], 4)
+
+
         pygame.display.flip()
 
 
@@ -144,8 +150,16 @@ class GameInterface:
                 square.piece = None
 
 
+    def set_selected_square(self, x, y):
+        self.get_square_in_coords(x, y).selected = True
+
+    def unset_selected_square(self, x, y):
+        self.get_square_in_coords(x, y).selected = False
+
     def exit(self):
         """
         Method to exit.
         """
         pygame.quit()
+
+
