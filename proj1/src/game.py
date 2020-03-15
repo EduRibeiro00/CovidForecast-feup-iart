@@ -322,7 +322,6 @@ class Game:
 
         else:
             possible_moves_neutron = self.possible_moves(neutron_square_x, neutron_square_y)
-            print(possible_moves_neutron)
             if len(possible_moves_neutron) == 0:
                 return True, PlayState.DRAW
 
