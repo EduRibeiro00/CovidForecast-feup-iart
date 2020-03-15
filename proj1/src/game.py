@@ -56,6 +56,7 @@ class Game:
         Method that handles all the events coming from the mouse.
         """
         if self.game_state == GameState.PLAY:
+
             # mouse coordinates
             square = self.interface.check_collision()
 
@@ -65,7 +66,6 @@ class Game:
                 # represents the rows
                 y = square.y
                 if self.play_state == PlayState.PLAYER_A_CHOOSING_SOLDIER:
-
                     if self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
                         self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
@@ -80,7 +80,11 @@ class Game:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_A_SOLDIER_CHAR
-                        self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+                        game_over_bool, final_state = self.check_game_end()
+                        if game_over_bool:
+                            self.play_state = final_state
+                        else:
+                            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
                         self.interface.reset_highlight()
 
                     elif self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
@@ -106,7 +110,11 @@ class Game:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = NEUTRON_CHAR
-                        self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
+                        game_over_bool, final_state = self.check_game_end()
+                        if game_over_bool:
+                            self.play_state = final_state
+                        else:
+                            self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
                         self.interface.reset_highlight()
 
                 elif self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
@@ -123,7 +131,11 @@ class Game:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = PLAYER_B_SOLDIER_CHAR
-                        self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+                        game_over_bool, final_state = self.check_game_end()
+                        if game_over_bool:
+                            self.play_state = final_state
+                        else:
+                            self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
                         self.interface.reset_highlight()
                     elif self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
@@ -148,7 +160,11 @@ class Game:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
                         self.current_board[self.selected_piece_y][self.selected_piece_x] = BLANK_SPACE_CHAR
                         self.current_board[y][x] = NEUTRON_CHAR
-                        self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
+                        game_over_bool, final_state = self.check_game_end()
+                        if game_over_bool:
+                            self.play_state = final_state
+                        else:
+                            self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
                         self.interface.reset_highlight()                  
 
 
@@ -275,7 +291,55 @@ class Game:
                     possibilities.append(coords)
                     break                                     
 
-        return possibilities                                                                
+        return possibilities
+
+
+    def get_neutron_piece(self):
+        """
+        Method that returns the coordinates of the neutron on the board.
+        """
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.current_board[i][j] == NEUTRON_CHAR:
+                    return j, i
+
+
+    def does_player_a_win(self, neutron_square_y):
+        """
+        Method that checks if player A has won.
+        """
+        if neutron_square_y == 0:
+            return True
+        return False
+
+
+    def does_player_b_win(self, neutron_square_y):
+        """
+        Method that checks if player B has won.
+        """
+        if neutron_square_y == self.size - 1:
+            return True
+        return False
+
+
+    def check_game_end(self):
+        """
+        Method that checks if the game has ended, and if so what was the result.
+        """
+        neutron_square_x, neutron_square_y = self.get_neutron_piece()
+        if self.does_player_a_win(neutron_square_y):
+            return True , PlayState.PLAYER_A_WINS
+
+        elif self.does_player_b_win(neutron_square_y):
+            return True, PlayState.PLAYER_B_WINS
+
+        else:
+            possible_moves_neutron = self.possible_moves(neutron_square_x, neutron_square_y)
+            if len(possible_moves_neutron) == 0:
+                return True, PlayState.DRAW
+            # TODO: esta mal, se o neutron estiver rodeado o jogador que jogaria a seguir perde
+
+        return False, None
 
 
     def exit(self):

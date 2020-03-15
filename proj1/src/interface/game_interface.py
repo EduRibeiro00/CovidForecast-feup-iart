@@ -107,8 +107,6 @@ class GameInterface:
         self.screen.fill(Colors.BACKGROUND_COLOR.value)  # fill the screen with black
 
         # Add a nice border
-        # It should be pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [46, 46, self.board_size * SQUARE_SIZE + 4, self.board_size * SQUARE_SIZE + 4], 4)
-        # but for some reason when displaying it appears wrong
         pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [46, 47, self.board_size * SQUARE_SIZE + 5.9, self.board_size * SQUARE_SIZE + 5.8], 4)
 
         # draw all squares
@@ -188,6 +186,9 @@ class GameInterface:
         self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
         self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
 
+        # set the center of the rectangular object.
+        move_piece_text_rect.center = (self.screen_width - 100 , self.screen_height // 4)
+        move_piece_text_rect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
 
 
     def calc_imgs_turn_info(self, state):
@@ -209,10 +210,6 @@ class GameInterface:
             move_piece_image = self.black_soldier_img
 
 
-        elif state == PlayState.PLAYER_B_CHOOSING_NEUTRON or state == PlayState.PLAYER_B_MOVING_NEUTRON:
-            current_player_image = self.black_soldier_img
-            move_piece_image = self.neutron_img
-
         else:
             current_player_image = None
             move_piece_image = None
@@ -225,7 +222,6 @@ class GameInterface:
         Wrapper function to flip the pygame screen.
         """
         pygame.display.flip()
-
 
     def exit(self):
         """
