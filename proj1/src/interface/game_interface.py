@@ -164,7 +164,7 @@ class GameInterface:
         self.get_square_in_coords(x, y).selected = False
 
 
-    def display_turn_information(self):
+    def display_turn_information(self, state):
         """
         Method that displays the turn information, indicating the who has the active turn and
         which type of piece they should move.
@@ -241,13 +241,11 @@ class GameInterface:
             self.screen.blit(final_state_text, final_state_textRect)
 
 
-     def flip(self):
+    def flip(self):
         """
         Wrapper function to flip the screen.
         """
         pygame.display.flip()
-
-
 
     def exit(self):
         """
