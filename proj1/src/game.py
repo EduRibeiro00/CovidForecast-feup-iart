@@ -3,6 +3,7 @@ from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
 
+
 class Game:
     """
     Main class representing the game.
@@ -19,14 +20,17 @@ class Game:
         self.selected_piece_x = None
         self.selected_piece_y = None
 
+
     def run(self):
         """
         Main method of the game class. Contains the main game cycle.
         """
         while self.game_state != GameState.EXIT:
             self.process_events()
+
             self.interface.draw_board(self.current_board)
             self.interface.display_turn_information(self.play_state)
+
             self.interface.flip()
 
 
@@ -44,6 +48,7 @@ class Game:
             # if the mouse button was pressed
             elif event == 'EVENT_MOUSEBUTTONDOWN':
                 self.handle_mouse_event()
+
 
 
     def handle_mouse_event(self):

@@ -23,7 +23,6 @@ class GameInterface:
         self.init_board_squares()
 
 
-
     def init_board_squares(self):
         """
         Method that constructs and initializes the board squares.
@@ -40,6 +39,7 @@ class GameInterface:
 
                 self.squares.append(Square(col_num, row_num, color))
                 cnt += 1
+
 
 
     def load_img_resources(self):
@@ -105,7 +105,6 @@ class GameInterface:
         """
         self.update_interface_board(board)
         self.screen.fill(Colors.BACKGROUND_COLOR.value)  # fill the screen with black
-
 
         # Add a nice border
         # It should be pygame.draw.rect(self.screen, Colors.BOARD_BORDER_COLOR.value, [46, 46, self.board_size * SQUARE_SIZE + 4, self.board_size * SQUARE_SIZE + 4], 4)
@@ -219,7 +218,6 @@ class GameInterface:
             move_piece_image = None
 
         return current_player_image, move_piece_image
-
 
 
     def flip(self):
