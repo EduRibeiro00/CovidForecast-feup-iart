@@ -291,33 +291,37 @@ class Game:
         return possibilities
 
 
-    def does_player_B_win(self, neutron_square):
-        if neutron_square.y == self.size - 1:
+    def does_player_B_win(self, neutron_square_y):
+        if neutron_square_y == self.size - 1:
             return True
         return False
 
-    def does_player_A_win(self, neutron_square):
-        if neutron_square.y == 0:
+    def does_player_A_win(self, neutron_square_y):
+        if neutron_square_y == 0:
             return True
         return False
 
     def get_neutron_piece(self):
-        for
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.current_board[i][j] == NEUTRON_CHAR:
+                    return j, i
 
     def check_is_final_state(self):
         """
              Method that calculates all possible movements of a given piece.
         """
-        neutron_square = self.get_neutron_piece()
-        if self.does_player_A_win(neutron_square):
+        neutron_square_x, neutron_square_y = self.get_neutron_piece()
+        if self.does_player_A_win(neutron_square_y):
             return True , PlayState.PLAYER_A_WINS
 
-        elif self.does_player_B_win(neutron_square):
+        elif self.does_player_B_win(neutron_square_y):
             return True, PlayState.PLAYER_B_WINS
 
         else:
-            possible_moves_neutron = self.possible_moves(neutron_square.x, neutron_square.y)
-            if possible_moves_neutron.__sizeof__() == 0:
+            possible_moves_neutron = self.possible_moves(neutron_square_x, neutron_square_y)
+            print(possible_moves_neutron)
+            if len(possible_moves_neutron) == 0:
                 return True, PlayState.DRAW
 
         return False, None
