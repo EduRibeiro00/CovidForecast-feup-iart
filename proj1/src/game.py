@@ -49,7 +49,7 @@ class Game:
                 self.process_events()
                 if self.play_state == PlayState.END:
                     self.interface.end_game()
-                    self.game_state = GameState.MAIN_MENU # TODO: mudar para GAME OVER quando estiver implementado
+                    self.game_state = GameState.GAME_OVER
 
 
             elif self.game_state != GameState.EXIT:

@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 import os
 from .colors import Colors
@@ -238,5 +240,4 @@ class GameInterface:
         Method to be called when a game ends.
         """
         pygame.quit()
-
 
