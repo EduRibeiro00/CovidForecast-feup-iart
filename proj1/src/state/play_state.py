@@ -14,5 +14,5 @@ class PlayState(enum.Enum):
     PLAYER_B_MOVING_NEUTRON = 8
     PLAYER_A_WINS = 9
     PLAYER_B_WINS = 10
-    DRAW = 11
+
 
