@@ -2,6 +2,7 @@ import pygame
 import os
 from .colors import Colors
 from .square import Square
+from state.play_state import PlayState
 
 # screen and board dimensions
 SQUARE_SIZE = 70
@@ -177,39 +178,75 @@ class GameInterface:
         # 2nd parameter is size of the font
         font = pygame.font.Font('freesansbold.ttf', 17)
 
-        # create a text suface object,
+        # create a text surface object,
         # on which text is drawn on it.
-        current_player_text = font.render('Current player', True, green, blue)
 
-        move_piece_text = font.render('Move piece', True, green, blue)
+        if state != PlayState.PLAYER_A_WINS and state != PlayState.PLAYER_B_WINS and state != PlayState.DRAW:
+            current_player_text = font.render('Current player', True, green, blue)
 
-        # create a rectangular object for the
-        # text surface object
-        current_player_textRect = current_player_text.get_rect()
+            move_piece_text = font.render('Move piece', True, green, blue)
 
-        move_piece_textRect = current_player_text.get_rect()
+            # create a rectangular object for the
+            # text surface object
+            current_player_textRect = current_player_text.get_rect()
 
-        # set the center of the rectangular object.
-        current_player_textRect.center = (self.screen_width - 100 , self.screen_height // 3)
+            move_piece_textRect = current_player_text.get_rect()
 
-
-
-        self.screen.blit(current_player_text, current_player_textRect)
-
-        self.screen.blit(self.black_soldier_img, (self.screen_width - 100 - 50, self.screen_height // 3 + 15))
-
-        move_piece_textRect.center = (self.screen_width - 100 , self.screen_height // 3 + self.soldier_height + 50)
-
-        self.screen.blit(self.neutron_img, (self.screen_width - 100 - 50, self.screen_height // 3 + self.soldier_height * 2 ))
-
-        self.screen.blit(move_piece_text, move_piece_textRect)
+            # set the center of the rectangular object.
+            current_player_textRect.center = (self.screen_width - 100 , self.screen_height // 4)
+            move_piece_textRect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
 
 
-    def flip(self):
+            self.screen.blit(current_player_text, current_player_textRect)
+            self.screen.blit(move_piece_text, move_piece_textRect)
+
+            if state == PlayState.PLAYER_A_CHOOSING_SOLDIER or state == PlayState.PLAYER_A_MOVING_SOLDIER:
+                current_player_image = self.white_soldier_img
+                move_piece_image = self.white_soldier_img
+
+            elif state == PlayState.PLAYER_A_CHOOSING_NEUTRON or state == PlayState.PLAYER_A_MOVING_NEUTRON:
+                current_player_image = self.white_soldier_img
+                move_piece_image = self.neutron_img
+
+
+            elif state == PlayState.PLAYER_B_CHOOSING_SOLDIER or state == PlayState.PLAYER_B_MOVING_SOLDIER:
+                current_player_image = self.black_soldier_img
+                move_piece_image = self.black_soldier_img
+
+
+            elif state == PlayState.PLAYER_B_CHOOSING_NEUTRON or state == PlayState.PLAYER_B_MOVING_NEUTRON:
+                current_player_image = self.black_soldier_img
+                move_piece_image = self.neutron_img
+   
+
+            self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
+            self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
+        
+        else:
+            font = pygame.font.Font('freesansbold.ttf', 15)
+            if state == PlayState.DRAW:
+                 final_state_text = font.render('DRAW', True, green, blue)
+
+            elif state == PlayState.PLAYER_A_WINS:
+                final_state_text = font.render('WHITE PLAYER WINS', True, green, blue)
+                self.screen.blit(self.white_soldier_img, (self.screen_width - 135, self.screen_height // 4 + 15))
+
+            elif state == PlayState.PLAYER_B_WINS:
+                final_state_text = font.render('BLACK PLAYER WINS', True, green, blue)
+                self.screen.blit(self.black_soldier_img, (self.screen_width - 135, self.screen_height // 4 + 15))
+
+            final_state_textRect = final_state_text.get_rect()
+
+            final_state_textRect.center = (self.screen_width - 100, self.screen_height // 4)
+            self.screen.blit(final_state_text, final_state_textRect)
+
+
+     def flip(self):
         """
         Wrapper function to flip the screen.
         """
         pygame.display.flip()
+
 
 
     def exit(self):
