@@ -336,8 +336,10 @@ class Game:
         else:
             possible_moves_neutron = self.possible_moves(neutron_square_x, neutron_square_y)
             if len(possible_moves_neutron) == 0:
-                return True, PlayState.DRAW
-            # TODO: esta mal, se o neutron estiver rodeado o jogador que jogaria a seguir perde
+                if self.play_state == PlayState.PLAYER_A_MOVING_SOLDIER:
+                    return True, PlayState.PLAYER_A_WINS
+                elif self.play_state == PlayState.PLAYER_B_MOVING_SOLDIER:
+                    return True, PlayState.PLAYER_B_WINS
 
         return False, None
 

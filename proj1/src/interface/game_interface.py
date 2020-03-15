@@ -183,13 +183,9 @@ class GameInterface:
 
         current_player_image, move_piece_image = self.calc_imgs_turn_info(state)
 
+        print(current_player_image, move_piece_image)
         self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
         self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
-
-        # set the center of the rectangular object.
-        move_piece_text_rect.center = (self.screen_width - 100 , self.screen_height // 4)
-        move_piece_text_rect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
-
 
     def calc_imgs_turn_info(self, state):
         """
@@ -209,6 +205,9 @@ class GameInterface:
             current_player_image = self.black_soldier_img
             move_piece_image = self.black_soldier_img
 
+        elif state == PlayState.PLAYER_B_CHOOSING_NEUTRON or state == PlayState.PLAYER_B_MOVING_NEUTRON:
+            current_player_image = self.black_soldier_img
+            move_piece_image = self.neutron_img
 
         else:
             current_player_image = None
