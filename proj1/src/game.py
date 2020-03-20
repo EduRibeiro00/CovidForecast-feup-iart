@@ -308,7 +308,7 @@ class Game:
         """
         Method that checks if player A has won.
         """
-        if neutron_square_y == 0:
+        if neutron_square_y == self.size - 1:
             return True
         return False
 
@@ -317,7 +317,7 @@ class Game:
         """
         Method that checks if player B has won.
         """
-        if neutron_square_y == self.size - 1:
+        if neutron_square_y == 0:
             return True
         return False
 
