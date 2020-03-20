@@ -172,27 +172,53 @@ class GameInterface:
         """
         font = pygame.font.Font(FONT_FILE, FONT_SIZE)
 
+        if state != PlayState.PLAYER_B_WINS and state != PlayState.PLAYER_A_WINS:
+            # create a text surface object, on which text is drawn on it.
+            current_player_text = font.render('Current player', True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+            move_piece_text = font.render('Move piece', True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+
+            # create a rectangular object for the text surface object
+            current_player_text_rect = current_player_text.get_rect()
+            move_piece_text_rect = current_player_text.get_rect()
+
+            # set the center of the rectangular object.
+            current_player_text_rect.center = (self.screen_width - 100 , self.screen_height // 4)
+            move_piece_text_rect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
+
+            self.screen.blit(current_player_text, current_player_text_rect)
+            self.screen.blit(move_piece_text, move_piece_text_rect)
+
+            current_player_image, move_piece_image = self.calc_imgs_turn_info(state)
+
+            self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
+            self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
+
+        else:
         # create a text surface object, on which text is drawn on it.
-        current_player_text = font.render('Current player', True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
-        move_piece_text = font.render('Move piece', True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+            winner_player_text , winner_player_image = self.calc_img_text_winner(state, font)
+            winner_player_text_rect = winner_player_text.get_rect()
 
-        # create a rectangular object for the text surface object
-        current_player_text_rect = current_player_text.get_rect()
-        move_piece_text_rect = current_player_text.get_rect()
+            winner_player_text_rect.center = (self.screen_width - 100, self.screen_height // 4)
 
-        # set the center of the rectangular object.
-        current_player_text_rect.center = (self.screen_width - 100 , self.screen_height // 4)
-        move_piece_text_rect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
-
-        self.screen.blit(current_player_text, current_player_text_rect)
-        self.screen.blit(move_piece_text, move_piece_text_rect)
-
-        current_player_image, move_piece_image = self.calc_imgs_turn_info(state)
-
-        self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
-        self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
+            self.screen.blit(winner_player_text, winner_player_text_rect)
+            self.screen.blit(winner_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
 
 
+    def calc_img_text_winner(self, state, font):
+
+        if state == PlayState.PLAYER_A_WINS:
+            winner_player_text = font.render('WHITE PLAYER WINS', True, Colors.TEXT_COLOR.value,
+                                             Colors.TEXT_BACKGROUND_COLOR.value)
+            winner_player_image = self.white_soldier_img
+        elif state == PlayState.PLAYER_B_WINS:
+            winner_player_text = font.render('BLACK PLAYER WINS', True, Colors.TEXT_COLOR.value,
+                                             Colors.TEXT_BACKGROUND_COLOR.value)
+            winner_player_image = self.black_soldier_img
+        else:
+            winner_player_text = None
+            winner_player_image = None
+
+        return  winner_player_text, winner_player_image
 
     def calc_imgs_turn_info(self, state):
         """
@@ -212,7 +238,6 @@ class GameInterface:
             current_player_image = self.black_soldier_img
             move_piece_image = self.black_soldier_img
 
-
         elif state == PlayState.PLAYER_B_CHOOSING_NEUTRON or state == PlayState.PLAYER_B_MOVING_NEUTRON:
             current_player_image = self.black_soldier_img
             move_piece_image = self.neutron_img
@@ -229,7 +254,6 @@ class GameInterface:
         Wrapper function to flip the pygame screen.
         """
         pygame.display.flip()
-
 
     def end_game(self):
         """
