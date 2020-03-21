@@ -1,3 +1,5 @@
+from utils.board_utils import *
+
 def move_up(node, x, y):
 
     #Upwards movement
