@@ -1,6 +1,8 @@
 import time
 import random
 
+from node import *
+
 def calculate_minimax(node, evaluator, first_turn, max_depth, player_char, opp_char):
     """
     Function that will calculate the best state from the current state,
@@ -18,7 +20,9 @@ def calculate_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
     elapsed_time = end_time - start_time
 
     print("The best play is column {best_board}. Took {elapsed_time} s. (Score = {best_score})".format(best_board=best_board, elapsed_time=elapsed_time, best_score=best_score))
-    return node.get_move_for_column(player_char, best_board)
+
+    new_node = Node(best_board, node.board_size)
+    return new_node
 
 
 
@@ -69,7 +73,7 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
             beta = min(beta, best_score)
             if beta <= alpha:
                 break
-            
+
     return best_board, best_score
 
 
