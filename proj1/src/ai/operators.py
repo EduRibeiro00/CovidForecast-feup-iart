@@ -128,8 +128,8 @@ def move_right_down(node, x, y):
 
 def create_new_node(node, new_x, new_y, old_x, old_y):
     new_board = deepcopy(node.board)
-    new_board[new_x][new_y] = new_board[old_x][old_y]
-    new_board[old_x][old_y] = BLANK_SPACE_CHAR
+    new_board[new_y][new_x] = new_board[old_y][old_x]
+    new_board[old_y][old_x] = BLANK_SPACE_CHAR
     return Node(new_board, node.board_size)
 
 
