@@ -1,5 +1,9 @@
 from state.game_state import GameState
 
+HUMAN_VS_HUMAN = "H / H"
+COMPUTER_VS_HUMAN = "C / H"
+COMPUTER_VS_COMPUTER = "C / C"
+HUMAN_VS_COMPUTER = "H / C"
 
 class Menu:
     """

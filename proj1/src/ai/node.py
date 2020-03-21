@@ -16,6 +16,7 @@ class Node:
         self.parent = None
         self.depth = 0
 
+
     def get_board(self):
         """
         Method that returns the current board.

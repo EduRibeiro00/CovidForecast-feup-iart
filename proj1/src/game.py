@@ -44,6 +44,7 @@ class Game:
 
 
             elif self.game_state == GameState.PLAY:
+
                 if self.play_state == PlayState.PLAYER_A_WINS or self.play_state == PlayState.PLAYER_B_WINS:
                     self.interface.draw_board(self.current_board)
                     self.interface.display_turn_information(self.play_state)
