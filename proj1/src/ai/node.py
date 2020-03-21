@@ -1,7 +1,5 @@
-from operators import *
-
-WHITE_PLAYER = 'W'
-BLACK_PLAYER = 'B'
+from .operators import *
+from utils.board_utils import *
 
 class Node:
     """
@@ -35,11 +33,12 @@ class Node:
         """
         Determines whether the state is final.
         """
-        neutron_x, neutron_y = get_neutron_coordinates(self)
-        if current_player == WHITE_PLAYER:
-            return does_white_player_win(neutron_y)
-        elif current_player == BLACK_PLAYER:
-            return  does_black_player_win(neutron_y)
+        neutron_x, neutron_y = self.get_neutron_coordinates()
+        if current_player == PLAYER_A:
+            return self.does_white_player_win(neutron_y)
+        elif current_player == PLAYER_B:
+            return self.does_black_player_win(neutron_y)
+
 
     def get_neutron_coordinates(self):
         """
