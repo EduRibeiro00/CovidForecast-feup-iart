@@ -1,4 +1,7 @@
 from utils.board_utils import *
+from copy import deepcopy
+
+
 
 def move_up(node, x, y):
 
@@ -9,10 +12,10 @@ def move_up(node, x, y):
                 if i == 1:
                     break
                 coords = (x, y - i + 1)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
             elif y - i == 0:
                 coords = (x, y - i)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
     return None
 
 def move_down(node, x, y):
@@ -24,10 +27,10 @@ def move_down(node, x, y):
                 if i == 1:
                     break
                 coords = (x, y + i - 1)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
             elif y + i == node.board_size - 1:
                 coords = (x, y + i)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
     return None
 
 def move_left(node, x, y):
@@ -39,10 +42,10 @@ def move_left(node, x, y):
                 if i == 1:
                     break
                 coords = (x - i + 1, y)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
             elif x - i == 0:
                 coords = (x - i, y)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
     return None
 
 def move_right(node, x, y):
@@ -54,10 +57,10 @@ def move_right(node, x, y):
                 if i == 1:
                     break
                 coords = (x + i - 1, y)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
             elif x + i == node.board_size - 1:
                 coords = (x + i, y)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
     return None
 
 def move_left_up(node,x, y):
@@ -70,10 +73,10 @@ def move_left_up(node,x, y):
                 if i == 1:
                     break
                 coords = (x - i + 1, y - i + 1)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
             elif x - i == 0 or y - i == 0:
                 coords = (x - i, y - i)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
     return None
 
 def move_left_down(node, x, y):
@@ -86,10 +89,10 @@ def move_left_down(node, x, y):
                 if i == 1:
                     break
                 coords = (x - i + 1, y + i - 1)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
             elif x - i == 0 or y + i == node.board_size - 1:
                 coords = (x - i, y + i)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
     return None
 
 def move_right_up(node, x, y):
@@ -102,11 +105,11 @@ def move_right_up(node, x, y):
                 if i == 1:
                     break
                 coords = (x + i - 1, y - i + 1)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
 
             elif x + i == node.board_size - 1 or y - i == 0:
                 coords = (x + i, y - i)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
     return None
 
 def move_right_down(node, x, y):
@@ -119,18 +122,18 @@ def move_right_down(node, x, y):
                 if i == 1:
                     break
                 coords = (x + i - 1, y + i - 1)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
             elif x + i == node.board_size - 1 or y + i == node.board_size - 1:
                 coords = (x + i, y + i)
-                return create_new_node(node, coords[0], coords[1], x, y)
+                return create_new_board(node, coords[0], coords[1], x, y)
     return None
 
 
-def create_new_node(node, new_x, new_y, old_x, old_y):
+def create_new_board(node, new_x, new_y, old_x, old_y):
     new_board = deepcopy(node.board)
     new_board[new_y][new_x] = new_board[old_y][old_x]
     new_board[old_y][old_x] = BLANK_SPACE_CHAR
-    return Node(new_board, node.board_size)
+    return new_board
 
 
 

@@ -1,7 +1,6 @@
 import time
 import random
-
-from node import *
+from .node import *
 
 def calculate_minimax(node, evaluator, first_turn, max_depth, player_char, opp_char):
     """
@@ -33,16 +32,16 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
     Returns the most advantageous play (column number) and its score.
     """
     # check if the node is terminal
-    end, winner = node.is_final_state()
+    end, winner = node.is_final_state(player_char)
     if end:
         if winner == player_char:
-            return None, 10000
+            return deepcopy(node.board), 10000
         else:
-            return None, -10000
+            return deepcopy(node.board), -10000
 
     # check if the max depth has been reached
     if node.depth == max_depth:
-        return None, evaluator(node, player_char)
+        return deepcopy(node.board), evaluator(node, player_char)
 
     # calculate possible moves
     if is_max_turn:
@@ -56,7 +55,7 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
 
     for possible_node in possible_nodes:
         possible_node.set_parent(node)
-        next_board, next_score = recursive_minimax(possible_node, evaluator, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
+        next_board, next_score = recursive_minimax(possible_node, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
 
         # if it is maximizer's turn, choose the highest value state
         if is_max_turn and best_score < next_score:
@@ -69,7 +68,7 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
         # if it is minimizer's turn, choose the lowest value state
         elif (not is_max_turn) and best_score > next_score:
             best_score = next_score
-            best_col = next_board
+            best_board = next_board
             beta = min(beta, best_score)
             if beta <= alpha:
                 break
@@ -81,12 +80,13 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
 def get_node_pairs(node, player_char, first_turn):
     if first_turn:
         possible_neutron_nodes = [node]
+
     else:
-        possible_neutron_nodes = node.get_possible_nodes(player_char, True)
+        possible_neutron_nodes = node.get_all_possible_nodes_for_player(player_char, True)
 
     possible_nodes = []
     for possible_neutron_node in possible_neutron_nodes:
-        possible_soldier_nodes = possible_neutron_node.get_possible_nodes(player_char, False)
+        possible_soldier_nodes = possible_neutron_node.get_all_possible_nodes_for_player(player_char, False)
         possible_nodes = possible_nodes + possible_soldier_nodes
 
     return possible_nodes

@@ -3,7 +3,10 @@ from utils.board_utils import *
 from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
+from ai.minimax import *
+from ai.heuristic import *
 import time
+
 
 
 class Game:
@@ -22,6 +25,7 @@ class Game:
         self.selected_piece_y = None
 
 
+
     def adapt_to_board_size(self):
         """
         Method that adapts the needed parameters/variables to the selected board size.
@@ -30,10 +34,21 @@ class Game:
         self.current_board = create_initial_board(self.size) # create board with the wanted size
 
 
+    def test_minimax(self):
+        self.adapt_to_board_size()
+        node = Node(self.current_board , self.size)
+
+
+        new_node =  calculate_minimax(node, heuristic_function_simple,  True, 4, PLAYER_A, PLAYER_B)
+
+        new_node.draw_node_in_terminal()
+
+
     def run(self):
         """
         Main method of the game class. Contains the main game cycle.
         """
+
         while self.game_state != GameState.EXIT:
 
             if self.game_state == GameState.PLAY_PREP:
