@@ -4,6 +4,8 @@ PLAYER_B_SOLDIER_CHAR = 'B'
 BLANK_SPACE_CHAR = ' '
 NEUTRON_CHAR = 'N'
 
+PLAYER_A = 'A'
+PLAYER_B = 'B'
 
 def create_initial_board(size):
     """

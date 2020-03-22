@@ -3,6 +3,7 @@ from utils.board_utils import *
 from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
+import time
 
 
 class Game:
@@ -43,6 +44,7 @@ class Game:
 
 
             elif self.game_state == GameState.PLAY:
+
                 if self.play_state == PlayState.PLAYER_A_WINS or self.play_state == PlayState.PLAYER_B_WINS:
                     self.interface.draw_board(self.current_board)
                     self.interface.display_turn_information(self.play_state)
@@ -56,6 +58,10 @@ class Game:
                     self.process_events()
 
                 else: # end play state
+
+                    # to give time for the player to see which player has won the game
+                    time.sleep(2.5)
+
                     self.interface.end_game()
                     self.game_state = GameState.GAME_OVER
 
