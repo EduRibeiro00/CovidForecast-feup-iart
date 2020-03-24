@@ -39,7 +39,11 @@ class Game:
         node = Node(self.current_board , self.size)
 
 
-        new_node =  calculate_minimax(node, heuristic_function_simple,  True, 2, PLAYER_A, PLAYER_B)
+        new_node =  calculate_minimax(node, heuristic_function_simple,  True, 3, PLAYER_A, PLAYER_B)
+
+        new_node.draw_node_in_terminal()
+
+        new_node = calculate_minimax(new_node, heuristic_function_simple, False, 3, PLAYER_B, PLAYER_A)
 
         new_node.draw_node_in_terminal()
 

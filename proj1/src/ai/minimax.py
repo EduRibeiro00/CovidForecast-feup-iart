@@ -35,13 +35,13 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
     end, winner = node.is_final_state(player_char)
     if end:
         if winner == player_char:
-            return deepcopy(node.board), 10000
+            return None, 10000
         else:
-            return deepcopy(node.board), -10000
+            return None, -10000
 
     # check if the max depth has been reached
     if node.depth == max_depth:
-        return deepcopy(node.board), evaluator(node, player_char)
+        return None, evaluator(node, player_char)
 
     # calculate possible moves
     if is_max_turn:
@@ -57,6 +57,8 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
         possible_node.set_parent(node)
         next_board, next_score = recursive_minimax(possible_node, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
 
+        if next_board == None and possible_node.depth == 1:
+            next_board = deepcopy(possible_node.board)
         # if it is maximizer's turn, choose the highest value state
         if is_max_turn and best_score < next_score:
             best_score = next_score
