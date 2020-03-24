@@ -37,17 +37,25 @@ class Game:
     def test_minimax(self):
         self.adapt_to_board_size()
 
-        board = [['B', 'B', 'B', 'B', ' '],
+        board = [['B', 'B', 'B', 'B', 'B'],
                  [' ', ' ', ' ', ' ', ' '],
                  [' ', ' ', ' ', ' ', ' '],
                  [' ', ' ', ' ', 'W', 'N'],
                  ['W', 'W', 'W', 'W', ' '],]
 
         node = Node(board, self.size)
+        current_node = Node(self.current_board, self.size)
 
-        new_node =  calculate_minimax(node, heuristic_function_simple, False, 5, PLAYER_A, PLAYER_B)
+        current_node.draw_node_in_terminal()
+        node.draw_node_in_terminal()
 
-        new_node.draw_node_in_terminal()
+
+
+        print(determine_plays_neutron_soldier(self.current_board, board, self.size))
+
+        #new_node =  calculate_minimax(node, heuristic_function_simple, False, 5, PLAYER_A, PLAYER_B)
+
+        # new_node.draw_node_in_terminal()
 
 
 
