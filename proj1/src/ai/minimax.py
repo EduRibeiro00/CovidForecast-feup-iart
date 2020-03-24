@@ -31,8 +31,13 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
     Alpha beta pruning is implemented.
     Returns the most advantageous play (column number) and its score.
     """
+    if is_max_turn:
+        current_player = player_char
+    else:
+        current_player = opp_char
+
     # check if the node is terminal
-    end, winner = node.is_final_state(player_char)
+    end, winner = node.is_final_state(current_player)
     if end:
         if winner == player_char:
             return None, 10000
@@ -44,10 +49,7 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
         return None, evaluator(node, player_char)
 
     # calculate possible moves
-    if is_max_turn:
-        possible_nodes = get_node_pairs(node, player_char, first_turn)
-    else:
-        possible_nodes = get_node_pairs(node, opp_char, first_turn)
+    possible_nodes = get_node_pairs(node, current_player, first_turn)
 
     best_score = float("-inf") if is_max_turn else float("inf")
     best_board = None
