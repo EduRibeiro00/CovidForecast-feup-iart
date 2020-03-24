@@ -36,16 +36,19 @@ class Game:
 
     def test_minimax(self):
         self.adapt_to_board_size()
-        node = Node(self.current_board , self.size)
 
+        board = [['B', 'B', 'B', 'B', ' '],
+                 [' ', ' ', ' ', ' ', ' '],
+                 [' ', ' ', ' ', ' ', ' '],
+                 [' ', ' ', ' ', 'W', 'N'],
+                 ['W', 'W', 'W', 'W', ' '],]
 
-        new_node =  calculate_minimax(node, heuristic_function_simple,  True, 3, PLAYER_A, PLAYER_B)
+        node = Node(board, self.size)
+
+        new_node =  calculate_minimax(node, heuristic_function_simple, False, 5, PLAYER_A, PLAYER_B)
 
         new_node.draw_node_in_terminal()
 
-        new_node = calculate_minimax(new_node, heuristic_function_simple, False, 3, PLAYER_B, PLAYER_A)
-
-        new_node.draw_node_in_terminal()
 
 
     def run(self):
@@ -357,34 +360,15 @@ class Game:
                 if self.current_board[i][j] == NEUTRON_CHAR:
                     return j, i
 
-
-    def does_player_a_win(self, neutron_square_y):
-        """
-        Method that checks if player A has won.
-        """
-        if neutron_square_y == self.size - 1:
-            return True
-        return False
-
-
-    def does_player_b_win(self, neutron_square_y):
-        """
-        Method that checks if player B has won.
-        """
-        if neutron_square_y == 0:
-            return True
-        return False
-
-
     def check_game_end(self):
         """
         Method that checks if the game has ended, and if so what was the result.
         """
         neutron_square_x, neutron_square_y = self.get_neutron_piece()
-        if self.does_player_a_win(neutron_square_y):
+        if neutron_square_y == self.size - 1:
             return True , PlayState.PLAYER_A_WINS
 
-        elif self.does_player_b_win(neutron_square_y):
+        elif neutron_square_y == 0:
             return True, PlayState.PLAYER_B_WINS
 
         else:
