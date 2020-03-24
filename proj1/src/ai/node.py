@@ -36,26 +36,37 @@ class Node:
                 return True
         return False
 
-    def is_final_state(self, current_player):
+    def is_final_state_neutron(self):
         """
-        Determines whether the state is final at the start of a turn
+        Determines whether the state is final, after moving the neutron.
+        That is, if the neutron is in the first row of any of the players.
         """
         neutron_x, neutron_y = self.get_neutron_coordinates()
 
         if neutron_y == 0:
-            return True, PLAYER_A
-        elif neutron_y == self.board_size - 1:
             return True, PLAYER_B
-        else:
-            moves_neutron = self.check_neutron_possible_moves(neutron_x, neutron_y)
-            if current_player == PLAYER_A:
-                if not moves_neutron:
-                    return True, PLAYER_B
-            elif current_player == PLAYER_B:
-                if not moves_neutron:
-                    return True, PLAYER_A
+        elif neutron_y == self.board_size - 1:
+            return True, PLAYER_A
 
         return False, None
+
+
+    def is_final_state_soldier(self, current_player):
+        """
+        Determines whether the state is final, after moving a soldier.
+        That is, if the neutron has no possible moves.
+        """
+        neutron_x, neutron_y = self.get_neutron_coordinates()
+        moves_neutron = self.check_neutron_possible_moves(neutron_x, neutron_y)
+        if current_player == PLAYER_A:
+            if not moves_neutron:
+                return True, PLAYER_A
+        elif current_player == PLAYER_B:
+            if not moves_neutron:
+                return True, PLAYER_B
+
+        return False, None
+
 
     def get_neutron_coordinates(self):
         """
