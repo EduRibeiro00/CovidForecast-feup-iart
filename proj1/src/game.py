@@ -389,24 +389,76 @@ class Game:
     def make_move_ai(self):
 
         node = Node(self.current_board, self.size)
+
         if self.current_player == PLAYER_B:
             opponent_player = PLAYER_A
-            self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+            player_piece = PLAYER_B_SOLDIER_CHAR
         elif self.current_player == PLAYER_A:
             opponent_player = PLAYER_B
-            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+            player_piece = PLAYER_A_SOLDIER_CHAR
 
         new_node =  calculate_minimax(node, heuristic_function_simple, self.first_turn, 3, self.current_player, opponent_player)
 
-        self.current_board = new_node.board
+        node.draw_node_in_terminal()
+        node_board_actual = Node(self.current_board, self.size)
+        node_board_actual.draw_node_in_terminal()
+        new_node.draw_node_in_terminal()
+
+        neutron, soldier = determine_moves_neutron_soldier(self.current_board, new_node.board, self.size)
+
+        time.sleep(2)
+
+        if self.first_turn:
+            self.current_board[soldier[0][0]][soldier[0][1]] = BLANK_SPACE_CHAR
+            self.current_board[soldier[1][0]][soldier[1][1]] = player_piece
+            self.interface.draw_board(self.current_board)
+            if opponent_player == PLAYER_B:
+                self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+            elif opponent_player == PLAYER_A:
+                self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+            self.interface.display_turn_information(self.play_state)
+            self.interface.flip()
+
+        else:
+            self.current_board[neutron[0][0]][neutron[0][1]] = BLANK_SPACE_CHAR
+            self.current_board[neutron[1][0]][neutron[1][1]] = NEUTRON_CHAR
+            self.interface.draw_board(self.current_board)
+            if self.current_player == PLAYER_B:
+                self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
+            elif self.current_player == PLAYER_A:
+                self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
+            self.interface.display_turn_information(self.play_state)
+            self.interface.flip()
+
+            end, winner = self.check_game_end()
+            if end:
+                if winner == PLAYER_B:
+                    self.play_state = PlayState.PLAYER_B_WINS
+                elif winner == PLAYER_A:
+                    self.play_state = PlayState.PLAYER_A_WINS
+            else:
+                if soldier != None:
+                    time.sleep(3)
+                    self.current_board[soldier[0][0]][soldier[0][1]] = BLANK_SPACE_CHAR
+                    self.current_board[soldier[1][0]][soldier[1][1]] = player_piece
+                    self.interface.draw_board(self.current_board)
+                    if self.current_player == PLAYER_B:
+                        self.play_state = PlayState.PLAYER_A_MOVING_NEUTRON
+                    elif self.current_player == PLAYER_A:
+                        self.play_state = PlayState.PLAYER_B_MOVING_NEUTRON
+                    self.interface.display_turn_information(self.play_state)
+                    self.interface.flip()
+
+                    end, winner = self.check_game_end()
+                    if end:
+                        if winner == PLAYER_B:
+                            self.play_state = PlayState.PLAYER_B_WINS
+                        elif winner == PLAYER_A:
+                            self.play_state = PlayState.PLAYER_A_WINS
+
+
         self.current_player = opponent_player
 
-        end, winner = self.check_game_end()
-        if end:
-            if winner == PLAYER_B:
-                self.play_state = PlayState.PLAYER_B_WINS
-            elif winner == PLAYER_A:
-                self.play_state = PlayState.PLAYER_A_WINS
 
 
 
