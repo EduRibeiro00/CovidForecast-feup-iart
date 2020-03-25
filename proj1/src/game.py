@@ -1,11 +1,13 @@
-from interface.menu import Menu
+from interface.menu import *
 from utils.board_utils import *
 from interface.game_interface import GameInterface
 from state.game_state import GameState
 from state.play_state import PlayState
 from ai.minimax import *
 from ai.heuristic import *
+
 import time
+
 
 
 
@@ -23,6 +25,8 @@ class Game:
         self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
         self.selected_piece_x = None
         self.selected_piece_y = None
+        self.current_player = PLAYER_A
+        self.first_turn = True
 
 
 
@@ -51,7 +55,7 @@ class Game:
 
 
 
-        print(determine_plays_neutron_soldier(self.current_board, board, self.size))
+        print(determine_moves_neutron_soldier(self.current_board, board, self.size))
 
         #new_node =  calculate_minimax(node, heuristic_function_simple, False, 5, PLAYER_A, PLAYER_B)
 
@@ -71,9 +75,11 @@ class Game:
                 self.interface.start_interface(self.size)
                 self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
                 self.game_state = GameState.PLAY
+                self.first_turn = True
 
 
             elif self.game_state == GameState.PLAY:
+
 
                 if self.play_state == PlayState.PLAYER_A_WINS or self.play_state == PlayState.PLAYER_B_WINS:
                     self.interface.draw_board(self.current_board)
@@ -85,13 +91,31 @@ class Game:
                     self.interface.draw_board(self.current_board)
                     self.interface.display_turn_information(self.play_state)
                     self.interface.flip()
-                    self.process_events()
+
+                    if self.menu.game_mode == HUMAN_VS_HUMAN:
+                        self.process_events()
+
+                    elif self.menu.game_mode == HUMAN_VS_COMPUTER:
+                        if self.current_player == PLAYER_A:
+                            self.process_events()
+                        elif self.current_player == PLAYER_B:
+                            self.make_move_ai()
+
+                    elif self.menu.game_mode == COMPUTER_VS_HUMAN:
+                        if self.current_player == PLAYER_A:
+                            self.make_move_ai()
+                        elif self.current_player == PLAYER_B:
+                            self.process_events()
+
+                    elif self.menu.game_mode == COMPUTER_VS_COMPUTER:
+                        self.make_move_ai()
+
+
 
                 else: # end play state
 
                     # to give time for the player to see which player has won the game
                     time.sleep(2.5)
-
                     self.interface.end_game()
                     self.game_state = GameState.GAME_OVER
 
@@ -150,6 +174,9 @@ class Game:
                             self.play_state = final_state
                         else:
                             self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+                            self.current_player = PLAYER_B
+                            if self.first_turn:
+                                self.first_turn = False
                         self.interface.reset_highlight()
 
                     elif self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
@@ -201,6 +228,7 @@ class Game:
                             self.play_state = final_state
                         else:
                             self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+                            self.current_player = PLAYER_B
                         self.interface.reset_highlight()
                     elif self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
@@ -358,6 +386,30 @@ class Game:
 
         return possibilities
 
+    def make_move_ai(self):
+
+        node = Node(self.current_board, self.size)
+        if self.current_player == PLAYER_B:
+            opponent_player = PLAYER_A
+            self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+        elif self.current_player == PLAYER_A:
+            opponent_player = PLAYER_B
+            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+
+        new_node =  calculate_minimax(node, heuristic_function_simple, self.first_turn, 3, self.current_player, opponent_player)
+
+        self.current_board = new_node.board
+        self.current_player = opponent_player
+
+        end, winner = self.check_game_end()
+        if end:
+            if winner == PLAYER_B:
+                self.play_state = PlayState.PLAYER_B_WINS
+            elif winner == PLAYER_A:
+                self.play_state = PlayState.PLAYER_A_WINS
+
+
+
 
     def get_neutron_piece(self):
         """
@@ -388,3 +440,5 @@ class Game:
                     return True, PlayState.PLAYER_B_WINS
 
         return False, None
+
+
