@@ -76,6 +76,7 @@ class Game:
                 self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
                 self.game_state = GameState.PLAY
                 self.first_turn = True
+                self.current_player = PLAYER_A
 
 
             elif self.game_state == GameState.PLAY:
@@ -406,6 +407,7 @@ class Game:
             self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
             self.current_board[soldier[0][0]][soldier[0][1]] = BLANK_SPACE_CHAR
             self.current_board[soldier[1][0]][soldier[1][1]] = player_piece
+            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
             self.first_turn = False
         else:
             self.current_board[neutron[0][0]][neutron[0][1]] = BLANK_SPACE_CHAR
