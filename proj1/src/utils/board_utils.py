@@ -51,10 +51,11 @@ def determine_moves_neutron_soldier(current_board, minimax_board, size):
     for i in range(size):
         for j in range(size):
 
-            if current_board[i][j] == NEUTRON_CHAR:
+            if current_board[i][j] == NEUTRON_CHAR and minimax_board[i][j] != NEUTRON_CHAR:
                 old_neutron = (i, j)
                 found_old_neutron = True
-            if minimax_board[i][j] == NEUTRON_CHAR:
+
+            if minimax_board[i][j] == NEUTRON_CHAR and current_board[i][j] != NEUTRON_CHAR:
                 new_neutron = (i, j)
                 found_new_neutron = True
 
@@ -77,5 +78,7 @@ def determine_moves_neutron_soldier(current_board, minimax_board, size):
 
     if not found_old_soldier and not found_new_soldier:
         return ((old_neutron, new_neutron), None)
+    elif not found_old_neutron and not found_new_neutron:
+        return (None, (old_soldier, new_soldier))
 
     return ((old_neutron, new_neutron), (old_soldier, new_soldier))
