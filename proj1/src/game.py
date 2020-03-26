@@ -34,8 +34,8 @@ class Game:
         self.before = 0
         self.time_passed = 0
         self.first_cycle = True
-        self.second_move = False
         self.started_threading = False
+        self.blinking_ai = False
 
 
 
@@ -99,7 +99,6 @@ class Game:
                 self.first_turn = True
                 self.current_player = PLAYER_A
                 self.calculated_moves = False
-                self.second_move = False
                 self.started_threading = False
 
 
@@ -168,7 +167,8 @@ class Game:
                     self.handle_mouse_event()
         elif current_player == "COMPUTER":
             for event in event_queue:
-                print("AI is still playing")
+                if event == 'EVENT_QUIT':
+                    self.play_state = PlayState.END
 
             self.make_move_ai()
 
@@ -222,7 +222,7 @@ class Game:
                         self.selected_piece_y = y
                         self.interface.reset_highlight()
                         self.highlights = self.possible_moves(x, y)
-                        self.interface.highlight_squares(self.highlights)                        
+                        self.interface.highlight_squares(self.highlights)
 
                 elif self.play_state == PlayState.PLAYER_A_CHOOSING_NEUTRON:
                     if self.current_board[y][x] == NEUTRON_CHAR:
@@ -231,7 +231,7 @@ class Game:
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_A_MOVING_NEUTRON
                         self.highlights = self.possible_moves(x, y)
-                        self.interface.highlight_squares(self.highlights)                        
+                        self.interface.highlight_squares(self.highlights)
 
                 elif self.play_state == PlayState.PLAYER_A_MOVING_NEUTRON:
                     if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
@@ -271,9 +271,9 @@ class Game:
                         self.interface.set_selected_square(x, y)
                         self.selected_piece_x = x
                         self.selected_piece_y = y
-                        self.interface.reset_highlight()                        
+                        self.interface.reset_highlight()
                         self.highlights = self.possible_moves(x, y)
-                        self.interface.highlight_squares(self.highlights)    
+                        self.interface.highlight_squares(self.highlights)
 
                 elif self.play_state == PlayState.PLAYER_B_CHOOSING_NEUTRON:
                     if self.current_board[y][x] == NEUTRON_CHAR:
@@ -282,7 +282,7 @@ class Game:
                         self.selected_piece_y = y
                         self.play_state = PlayState.PLAYER_B_MOVING_NEUTRON
                         self.highlights = self.possible_moves(x, y)
-                        self.interface.highlight_squares(self.highlights)               
+                        self.interface.highlight_squares(self.highlights)
 
                 elif self.play_state == PlayState.PLAYER_B_MOVING_NEUTRON:
                     if self.current_board[y][x] == BLANK_SPACE_CHAR and (x,y) in self.highlights:
@@ -294,7 +294,7 @@ class Game:
                             self.play_state = final_state
                         else:
                             self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
-                        self.interface.reset_highlight()                  
+                        self.interface.reset_highlight()
 
 
 
@@ -436,54 +436,175 @@ class Game:
             self.started_threading = True
 
 
-        if (self.time_passed > 3 or self.second_move) and self.calculated_moves:
-            if self.first_turn:
-                self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
-                self.current_board[self.soldier_move[0][0]][self.soldier_move[0][1]] = BLANK_SPACE_CHAR
-                self.current_board[self.soldier_move[1][0]][self.soldier_move[1][1]] = self.player_piece
+        if self.play_state == PlayState.PLAYER_A_CHOOSING_SOLDIER:
+
+            if self.calculated_moves:
+                if (self.time_passed > 3):
+                    self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
+                    self.interface.get_square_in_coords(self.soldier_move[0][1], self.soldier_move[0][0]).selected = False
+                    self.blinking_ai = False
+                elif not self.blinking_ai:
+                    self.blinking_ai = True
+                    self.interface.get_square_in_coords(self.soldier_move[0][1], self.soldier_move[0][0]).selected = True
+
+        elif self.play_state == PlayState.PLAYER_A_MOVING_SOLDIER:
+
+            self.current_board[self.soldier_move[0][0]][self.soldier_move[0][1]] = BLANK_SPACE_CHAR
+            self.current_board[self.soldier_move[1][0]][self.soldier_move[1][1]] = self.player_piece
+
+            end, winner_state = self.check_game_end()
+            if end:
+                self.play_state = winner_state
+            else:
                 self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+
+            if self.first_turn:
                 self.first_turn = False
-                self.current_player = self.opponent_player
-                self.calculated_moves = False
+
+            self.current_player = self.opponent_player
+            self.calculated_moves = False
+            self.time_passed = 0
+
+        elif self.play_state == PlayState.PLAYER_A_CHOOSING_NEUTRON:
+
+            if self.calculated_moves:
+                if (self.time_passed > 3):
+                    self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
+                    self.interface.get_square_in_coords(self.neutron_move[0][1],
+                                                        self.neutron_move[0][0]).selected = False
+
+                    self.play_state = PlayState.PLAYER_A_MOVING_NEUTRON
+                    self.blinking_ai = False
+                elif not self.blinking_ai:
+                    self.blinking_ai = True
+                    self.interface.get_square_in_coords(self.neutron_move[0][1],
+                                                        self.neutron_move[0][0]).selected = True
+
+        elif self.play_state == PlayState.PLAYER_A_MOVING_NEUTRON:
+
+            self.current_board[self.neutron_move[0][0]][self.neutron_move[0][1]] = BLANK_SPACE_CHAR
+            self.current_board[self.neutron_move[1][0]][self.neutron_move[1][1]] = NEUTRON_CHAR
+
+            end, winner_state = self.check_game_end()
+            if end:
+                self.play_state = winner_state
+            else:
+                self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
+
+            self.blinking_ai = False
+            self.time_passed = 0
+
+
+        elif self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
+
+            if self.calculated_moves:
+                if (self.time_passed > 3):
+                    self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
+                    self.interface.get_square_in_coords(self.soldier_move[0][1], self.soldier_move[0][0]).selected = False
+                    self.blinking_ai = False
+                elif not self.blinking_ai:
+                    self.blinking_ai = True
+                    self.interface.get_square_in_coords(self.soldier_move[0][1], self.soldier_move[0][0]).selected = True
+
+        elif self.play_state == PlayState.PLAYER_B_MOVING_SOLDIER:
+
+            self.current_board[self.soldier_move[0][0]][self.soldier_move[0][1]] = BLANK_SPACE_CHAR
+            self.current_board[self.soldier_move[1][0]][self.soldier_move[1][1]] = self.player_piece
+            end, winner_state = self.check_game_end()
+            if end:
+                self.play_state = winner_state
+            else:
+                self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+
+            self.current_player = self.opponent_player
+            self.calculated_moves = False
+            self.time_passed = 0
+
+
+        elif self.play_state == PlayState.PLAYER_B_CHOOSING_NEUTRON:
+
+            if self.calculated_moves:
+                if (self.time_passed > 3):
+                    self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
+                    self.interface.get_square_in_coords(self.neutron_move[0][1],
+                                                        self.neutron_move[0][0]).selected = False
+                    self.play_state = PlayState.PLAYER_B_MOVING_NEUTRON
+                    self.blinking_ai = False
+                elif not self.blinking_ai:
+                    self.blinking_ai = True
+                    self.interface.get_square_in_coords(self.neutron_move[0][1],
+                                                        self.neutron_move[0][0]).selected = True
+
+
+
+        elif self.play_state == PlayState.PLAYER_B_MOVING_NEUTRON:
+
+            self.current_board[self.neutron_move[0][0]][self.neutron_move[0][1]] = BLANK_SPACE_CHAR
+            self.current_board[self.neutron_move[1][0]][self.neutron_move[1][1]] = NEUTRON_CHAR
+
+            end, winner_state = self.check_game_end()
+            if end:
+                self.play_state = winner_state
+            else:
+                self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
+
+            self.time_passed = 0
+
+
+        """
+        OLD VERSION, WORKING BUT UGLY
+        """
+        """
+        if self.first_turn:
+            self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
+            self.current_board[self.soldier_move[0][0]][self.soldier_move[0][1]] = BLANK_SPACE_CHAR
+            self.current_board[self.soldier_move[1][0]][self.soldier_move[1][1]] = self.player_piece
+            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
+            self.first_turn = False
+            self.current_player = self.opponent_player
+            self.calculated_moves = False
+            self.time_passed = 0
+
+        else:
+            if not self.second_move:
+                self.current_board[self.neutron_move[0][0]][self.neutron_move[0][1]] = BLANK_SPACE_CHAR
+                self.current_board[self.neutron_move[1][0]][self.neutron_move[1][1]] = NEUTRON_CHAR
+
+                end, winner_state =  self.check_game_end()
+                if end:
+                    self.play_state = winner_state
+                else:
+                    self.second_move = True
+
+                    if self.current_player == PLAYER_A:
+                        self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
+                    elif self.current_player == PLAYER_B:
+                        self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
+
                 self.time_passed = 0
 
-            else:
-                if not self.second_move:
-                    self.current_board[self.neutron_move[0][0]][self.neutron_move[0][1]] = BLANK_SPACE_CHAR
-                    self.current_board[self.neutron_move[1][0]][self.neutron_move[1][1]] = NEUTRON_CHAR
 
-                    end, winner_state =  self.check_game_end()
+            elif self.second_move:
+
+                if self.time_passed > 3:
+
+                    self.current_board[self.soldier_move[0][0]][self.soldier_move[0][1]] = BLANK_SPACE_CHAR
+                    self.current_board[self.soldier_move[1][0]][self.soldier_move[1][1]] = self.player_piece
+
+                    end, winner_state = self.check_game_end()
                     if end:
                         self.play_state = winner_state
                     else:
-                        self.second_move = True
+                        if self.current_player == PLAYER_B:
+                            self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
+                        elif self.current_player == PLAYER_A:
+                            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
 
-                        if self.current_player == PLAYER_A:
-                            self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
-                        elif self.current_player == PLAYER_B:
-                            self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
+                    self.current_player = self.opponent_player
+                    self.second_move = False
                     self.time_passed = 0
-
-
-                elif self.second_move:
-
-                    if self.time_passed > 3:
-
-                        self.current_board[self.soldier_move[0][0]][self.soldier_move[0][1]] = BLANK_SPACE_CHAR
-                        self.current_board[self.soldier_move[1][0]][self.soldier_move[1][1]] = self.player_piece
-
-                        end, winner_state = self.check_game_end()
-                        if end:
-                            self.play_state = winner_state
-                        else:
-                            if self.current_player == PLAYER_B:
-                                self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
-                            elif self.current_player == PLAYER_A:
-                                self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
-                        self.current_player = self.opponent_player
-                        self.second_move = False
-                        self.time_passed = 0
-                        self.calculated_moves = False
+                    self.calculated_moves = False
+        """
 
     def calculate_minimax_thread(self):
 
