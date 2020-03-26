@@ -17,7 +17,7 @@ class Menu:
         self.board_size = 5
         self.difficulty_player_a = 'Medium'
         self.difficulty_player_b = 'Medium'
-        self.game_mode = 'H / C'
+        self.game_mode = 'H / H'
 
 
     def get_board_size(self):
@@ -198,16 +198,19 @@ class Menu:
         print('Choose an option:')
         print('1 -> H / H')
         print('2 -> H / C')
-        print('3 -> C / C')
+        print('3 -> C / H')
+        print('4 -> C / C')
         print('Current: {mode}'.format(mode=self.game_mode))
-        input = self.get_input_from_terminal([1, 2, 3])
+        input = self.get_input_from_terminal([1, 2, 3, 4])
 
         if input == 1:
-            self.game_mode = 'H / H'
+            self.game_mode = HUMAN_VS_HUMAN
         elif input == 2:
-            self.game_mode = 'H / C'
+            self.game_mode = HUMAN_VS_COMPUTER
         elif input == 3:
-            self.game_mode = 'C / C'
+            self.game_mode = COMPUTER_VS_HUMAN
+        elif input == 4:
+            self.game_mode = COMPUTER_VS_COMPUTER
 
         return GameState.MAIN_MENU
 

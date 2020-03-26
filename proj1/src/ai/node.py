@@ -66,6 +66,25 @@ class Node:
 
         return False, None
 
+    def is_final_state(self, current_player):
+
+        neutron_x, neutron_y = self.get_neutron_coordinates()
+
+        if neutron_y == 0:
+            return True, PLAYER_B
+        elif neutron_y == self.board_size - 1:
+            return True, PLAYER_A
+        else:
+            moves_neutron = self.check_neutron_possible_moves(neutron_x, neutron_y)
+            if current_player == PLAYER_A:
+                if not moves_neutron:
+                    return True, PLAYER_A
+            elif current_player == PLAYER_B:
+                if not moves_neutron:
+                    return True, PLAYER_B
+
+        return False, None
+
 
     def get_neutron_coordinates(self):
         """

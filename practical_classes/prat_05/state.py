@@ -4,17 +4,21 @@ class State:
         Constructor of the class.
         """
         self.subj_slots = subj_slots # list where index is subject and value is subject's slot
-        self.score = self.calc_solution_score(incompatibilies)
+        self.fitness = self.calc_fitness(incompatibilies)
 
 
-    def get_score(self):
+    def get_slots(self):
+        return self.subj_slots
+
+
+    def get_fitness(self):
         """
-        Method that retrieves the state's score.
+        Method that retrieves the state's fitness.
         """
-        return self.score
+        return self.fitness
 
 
-    def calc_solution_score(self, incompatibilities):
+    def calc_fitness(self, incompatibilities):
         """
         Calculate the score of the state's solution to the problem.
         The lower the score the better, because the score shows the
@@ -53,8 +57,4 @@ class State:
         """
         Overload of the to-string operator.
         """
-        return "{slots} ; score = {score}".format(slots=self.subj_slots, score=self.score)
-
-
-
-
+        return "{slots} ; score = {score}".format(slots=self.subj_slots, score=self.fitness)
