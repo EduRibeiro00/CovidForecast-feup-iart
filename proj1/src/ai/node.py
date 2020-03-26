@@ -42,7 +42,6 @@ class Node:
         That is, if the neutron is in the first row of any of the players.
         """
         neutron_x, neutron_y = self.get_neutron_coordinates()
-
         if neutron_y == 0:
             return True, PLAYER_B
         elif neutron_y == self.board_size - 1:
@@ -78,11 +77,6 @@ class Node:
                     return j, i
 
 
-
-
-
-    # CHECK INDEX ORDER MAYBE SWITCHING THE J AND THE I
-
     def get_all_possible_nodes_for_player(self, current_player, neutron_turn):
 
         possible_nodes = []
@@ -102,6 +96,7 @@ class Node:
                         possible_nodes_for_soldier = self.get_possible_nodes_for_piece(j, i)
                         possible_nodes = possible_nodes + possible_nodes_for_soldier
             return possible_nodes
+
 
     def get_possible_nodes_for_piece(self, piece_x, piece_y):
 

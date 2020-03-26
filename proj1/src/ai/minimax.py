@@ -19,6 +19,8 @@ def calculate_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
 
     best_board, best_score = recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_char, True, float("-inf"), float("inf"))
 
+    # TODO: calcular jogadas
+
     end_time = time.time()
     elapsed_time = end_time - start_time
 
@@ -39,42 +41,34 @@ def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
     else:
         current_player = opp_char
 
-    # check if the node is terminal
-    end, winner = node.is_final_state(current_player)
-    if end:
-        if winner == player_char:
-            return None, BEST_VALUE_MINIMAX
-        else:
-            return None, WORST_VALUE_MINIMAX
 
     # check if the max depth has been reached
     if node.depth == max_depth:
         return None, evaluator(node, player_char)
 
     # calculate possible moves
-    possible_nodes = get_node_pairs(node, current_player, first_turn)
-
+    possible_node_tuples = get_node_pairs(node, current_player, first_turn)
 
     # if we are on the first row of states, if there is any final state in that depth,
     # choose it, because it is guaranteed that we will win the game
     if node.depth == 0:
-        for possible_node in possible_nodes:
-            end, winner = possible_node.is_final_state(current_player)
+        for possible_node_tuples in possible_nodes:
+            end, winner = possible_node_tuples.is_final_state(current_player)
             if end and winner == player_char:
-                return possible_node.board, BEST_VALUE_MINIMAX
+                return possible_node_tuples.board, BEST_VALUE_MINIMAX
 
 
     best_score = float("-inf") if is_max_turn else float("inf")
     best_board = None
     random.shuffle(possible_nodes) #TODO: node-ordering function
 
-    for possible_node in possible_nodes:
-        possible_node.set_parent(node)
-        next_board, next_score = recursive_minimax(possible_node, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
+    for possible_node_tuples in possible_nodes:
+        possible_node_tuples.set_parent(node)
+        next_board, next_score = recursive_minimax(possible_node_tuples, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
 
         # if the node is one that can be chosen has a the new board, instantiate the next_board variable
-        if next_board == None and possible_node.depth == 1:
-            next_board = possible_node.board
+        if next_board == None and possible_node_tuples.depth == 1:
+            next_board = possible_node_tuples.board
 
         # if it is maximizer's turn, choose the highest value state
         if is_max_turn and best_score < next_score:
@@ -103,8 +97,14 @@ def get_node_pairs(node, player_char, first_turn):
 
     possible_nodes = []
     for possible_neutron_node in possible_neutron_nodes:
-        possible_soldier_nodes = possible_neutron_node.get_all_possible_nodes_for_player(player_char, False)
-        possible_nodes = possible_nodes + possible_soldier_nodes
+        end, winner = possible_neutron_node.is_final_state_neutron()
+        if end:
+            possible_nodes.append((possible_neutron_node, winner))
+        else:
+            possible_soldier_nodes = possible_neutron_node.get_all_possible_nodes_for_player(player_char, False)
+            for possible_soldier_node in possible_soldier_nodes:
+                _, winner = possible_soldier_node.is_final_state_soldier(player_char)
+                possible_nodes.append((possible_soldier_node, winner))
 
     return possible_nodes
 
