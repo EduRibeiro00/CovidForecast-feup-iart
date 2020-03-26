@@ -17,9 +17,7 @@ def calculate_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
     print("Computing minimax algorithm...")
     start_time = time.time()
 
-    best_board, best_score = recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_char, True, float("-inf"), float("inf"))
-
-    # TODO: calcular jogadas
+    best_board, best_score = recursive_minimax((node, None), evaluator, first_turn, max_depth, player_char, opp_char, True, float("-inf"), float("inf"))
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -30,45 +28,65 @@ def calculate_minimax(node, evaluator, first_turn, max_depth, player_char, opp_c
     return new_node
 
 
-def recursive_minimax(node, evaluator, first_turn, max_depth, player_char, opp_char, is_max_turn, alpha, beta):
+def recursive_minimax(node_tuple, evaluator, first_turn, max_depth, player_char, opp_char, is_max_turn, alpha, beta):
     """
     Represents an "iteration" of the minimax algorithm.
     Alpha beta pruning is implemented.
     Returns the most advantageous play (column number) and its score.
     """
-    if is_max_turn:
-        current_player = player_char
-    else:
-        current_player = opp_char
+    # calculate the player that has the current turn
+    current_player = player_char if is_max_turn else opp_char
 
+    # if state is final, return its final value, depending on the current player
+    winner = node_tuple[1]
+    if winner == player_char:
+        return None, BEST_VALUE_MINIMAX
+    elif winner == opp_char:
+        return None, WORST_VALUE_MINIMAX
+
+    # extract the node from the tuple
+    node = node_tuple[0]
 
     # check if the max depth has been reached
     if node.depth == max_depth:
         return None, evaluator(node, player_char)
 
-    # calculate possible moves
-    possible_node_tuples = get_node_pairs(node, current_player, first_turn)
+    # extract generator for the possible nodes
+    gen = get_node_pairs(node, current_player, first_turn)
 
-    # if we are on the first row of states, if there is any final state in that depth,
-    # choose it, because it is guaranteed that we will win the game
     if node.depth == 0:
-        for possible_node_tuples in possible_nodes:
-            end, winner = possible_node_tuples.is_final_state(current_player)
-            if end and winner == player_char:
-                return possible_node_tuples.board, BEST_VALUE_MINIMAX
+        # calculate the possible nodes one by one, to see if there is any final state.
+        # If there is, return it. Else, keep them in a list to continue with the Minimax alg.
+        possible_node_tuples = []
+        for next_node_tuple in gen:
+            if next_node_tuple[1] == player_char:
+                return next_node_tuple[0].get_board(), BEST_VALUE_MINIMAX
+
+            possible_node_tuples.append(next_node_tuple)
+
+    else:
+        # calculate all states
+        possible_node_tuples = list(gen)
+
+    # order the tuples
+    random.shuffle(possible_node_tuples)  # TODO: node-ordering function
 
 
+    # initiate minimax variables
     best_score = float("-inf") if is_max_turn else float("inf")
     best_board = None
-    random.shuffle(possible_nodes) #TODO: node-ordering function
 
-    for possible_node_tuples in possible_nodes:
-        possible_node_tuples.set_parent(node)
-        next_board, next_score = recursive_minimax(possible_node_tuples, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
+    # for each possible state
+    for possible_node_tuple in possible_node_tuples:
+        possible_node = possible_node_tuple[0]
+
+        # recursively call minimax again on the possible node (depth first search)
+        possible_node.set_parent(node)
+        next_board, next_score = recursive_minimax(possible_node_tuple, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
 
         # if the node is one that can be chosen has a the new board, instantiate the next_board variable
-        if next_board == None and possible_node_tuples.depth == 1:
-            next_board = possible_node_tuples.board
+        if next_board == None and possible_node.depth == 1:
+            next_board = possible_node.get_board()
 
         # if it is maximizer's turn, choose the highest value state
         if is_max_turn and best_score < next_score:
@@ -93,18 +111,47 @@ def get_node_pairs(node, player_char, first_turn):
     if first_turn:
         possible_neutron_nodes = [node]
     else:
-        possible_neutron_nodes = node.get_all_possible_nodes_for_player(player_char, True)
+        possible_neutron_nodes = []
+        neutron_x, neutron_y = node.get_neutron_coordinates()
+        for op in operators:
+            new_board = op(node, neutron_x, neutron_y)
+            if new_board is not None:
+                new_node = Node(new_board, node.board_size)
+                end, winner = new_node.is_final_state_neutron(neutron_y)
+                if end:
+                    yield (new_node, winner)
+                else:
+                    possible_neutron_nodes.append(new_node)
 
-    possible_nodes = []
+
     for possible_neutron_node in possible_neutron_nodes:
-        end, winner = possible_neutron_node.is_final_state_neutron()
-        if end:
-            possible_nodes.append((possible_neutron_node, winner))
-        else:
-            possible_soldier_nodes = possible_neutron_node.get_all_possible_nodes_for_player(player_char, False)
-            for possible_soldier_node in possible_soldier_nodes:
-                _, winner = possible_soldier_node.is_final_state_soldier(player_char)
-                possible_nodes.append((possible_soldier_node, winner))
+        for i in range(node.board_size):
+            for j in range(node.board_size):
+                if ((player_char == PLAYER_A and node.get_board()[i][j] == PLAYER_A_SOLDIER_CHAR) or
+                    (player_char == PLAYER_B and node.get_board()[i][j] == PLAYER_B_SOLDIER_CHAR)):
+                    for op in operators:
+                        new_board = op(possible_neutron_node, j, i)
+                        if new_board is not None:
+                            new_node = Node(new_board, node.board_size)
+                            _, winner = new_node.is_final_state_soldier(player_char)
+                            yield (new_node, winner)
 
-    return possible_nodes
+
+    # if first_turn:
+    #     possible_neutron_nodes = [node]
+    # else:
+    #     possible_neutron_nodes = node.get_all_possible_nodes_for_player(player_char, True)
+    #
+    # possible_nodes = []
+    # for possible_neutron_node in possible_neutron_nodes:
+    #     end, winner = possible_neutron_node.is_final_state_neutron()
+    #     if end:
+    #         possible_nodes.append((possible_neutron_node, winner))
+    #     else:
+    #         possible_soldier_nodes = possible_neutron_node.get_all_possible_nodes_for_player(player_char, False)
+    #         for possible_soldier_node in possible_soldier_nodes:
+    #             _, winner = possible_soldier_node.is_final_state_soldier(player_char)
+    #             possible_nodes.append((possible_soldier_node, winner))
+    #
+    # return possible_nodes
 

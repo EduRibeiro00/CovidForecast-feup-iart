@@ -6,7 +6,10 @@ NEUTRON_CHAR = 'N'
 
 PLAYER_A = 'A'
 PLAYER_B = 'B'
-from copy import deepcopy
+
+HUMAN = "HUMAN"
+COMPUTER = "COMPUTER"
+ENDGAME = "ENDGAME"
 
 
 
@@ -42,9 +45,10 @@ def create_initial_board(size):
 
     return board
 
+
 def determine_moves_neutron_soldier(current_board, minimax_board, size):
     """
-       Function that determines and returns the the moves of the player (neutron move and soldier move)
+    Function that determines and returns the the moves of the player (neutron move and soldier move)
     """
     found_old_neutron, found_new_neutron, found_old_soldier, found_new_soldier = False, False, False, False
 

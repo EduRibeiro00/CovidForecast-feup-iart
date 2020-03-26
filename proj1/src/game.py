@@ -11,7 +11,6 @@ import _thread
 import time
 
 
-
 class Game:
     """
     Main class representing the game.
@@ -30,15 +29,11 @@ class Game:
         self.first_turn = True
         self.calculated_moves = False
 
-
         self.before = 0
         self.time_passed = 0
         self.first_cycle = True
         self.started_threading = False
         self.blinking_ai = False
-
-
-
 
 
     def adapt_to_board_size(self):
@@ -48,6 +43,9 @@ class Game:
         self.size = self.menu.get_board_size()
         self.current_board = create_initial_board(self.size) # create board with the wanted size
 
+
+     # -------------------
+     # TODO: apagar depois de testar
 
     def test_minimax(self):
         self.adapt_to_board_size()
@@ -71,6 +69,9 @@ class Game:
         #new_node =  calculate_minimax(node, heuristic_function_simple, False, 5, PLAYER_A, PLAYER_B)
 
         # new_node.draw_node_in_terminal()
+
+     # -------------------
+
 
     def run(self):
         """
@@ -113,32 +114,31 @@ class Game:
                     self.interface.flip()
 
                     if self.menu.game_mode == HUMAN_VS_HUMAN:
-                        self.process_events("HUMAN")
+                        self.process_events(HUMAN)
 
 
                     elif self.menu.game_mode == HUMAN_VS_COMPUTER:
                         if self.current_player == PLAYER_A:
-                            self.process_events("HUMAN")
+                            self.process_events(HUMAN)
                         elif self.current_player == PLAYER_B:
-                            self.process_events("COMPUTER")
+                            self.process_events(COMPUTER)
 
                     elif self.menu.game_mode == COMPUTER_VS_HUMAN:
 
                         if self.current_player == PLAYER_A:
-                            self.process_events("COMPUTER")
+                            self.process_events(COMPUTER)
                         elif self.current_player == PLAYER_B:
-                            self.process_events("HUMAN")
+                            self.process_events(HUMAN)
 
                     elif self.menu.game_mode == COMPUTER_VS_COMPUTER:
-                        self.process_events("COMPUTER")
-
+                        self.process_events(COMPUTER)
 
 
                 else: # end play state
 
                     # to give time for the player to see which player has won the game
                     if self.time_passed < 4:
-                        self.process_events("ENDGAME")
+                        self.process_events(ENDGAME)
                     elif self.time_passed > 4:
                         self.interface.end_game()
                         self.game_state = GameState.GAME_OVER
@@ -154,7 +154,7 @@ class Game:
         """
         event_queue = self.interface.watch_for_events()  # get events from pygame
 
-        if current_player == "HUMAN":
+        if current_player == HUMAN:
             for event in event_queue:
             # quit the game
                 if event == 'EVENT_QUIT':
@@ -165,7 +165,7 @@ class Game:
                 elif event == 'EVENT_MOUSEBUTTONDOWN':
                     self.handle_mouse_event()
 
-        elif current_player == "COMPUTER":
+        elif current_player == COMPUTER:
             for event in event_queue:
                 if event == 'EVENT_QUIT':
                     self.play_state = PlayState.END
@@ -175,7 +175,7 @@ class Game:
                     print("AI is still playing!")
             self.make_move_ai()
 
-        elif current_player == "ENDGAME":
+        elif current_player == ENDGAME:
             for event in event_queue:
                 if event == 'EVENT_MOUSEBUTTONDOWN':
                     print("Game is ending soon!")
@@ -432,6 +432,7 @@ class Game:
 
         return possibilities
 
+
     def make_move_ai(self):
 
         if not self.calculated_moves and not self.started_threading:
@@ -546,7 +547,6 @@ class Game:
                                                         self.neutron_move[0][0]).selected = True
 
 
-
         elif self.play_state == PlayState.PLAYER_B_MOVING_NEUTRON:
 
             self.current_board[self.neutron_move[0][0]][self.neutron_move[0][1]] = BLANK_SPACE_CHAR
@@ -560,7 +560,10 @@ class Game:
 
             self.time_passed = 0
 
+
+
     def calculate_minimax_thread(self):
+        # TODO: usar cenas do menu (max_depth e funcao heuristica) para passar para esta funcao
 
         node = Node(self.current_board, self.size)
         new_node = calculate_minimax(node, heuristic_function_simple, self.first_turn, 3, self.current_player, self.opponent_player)
@@ -578,6 +581,7 @@ class Game:
             for j in range(self.size):
                 if self.current_board[i][j] == NEUTRON_CHAR:
                     return j, i
+
 
     def check_game_end(self):
         """
