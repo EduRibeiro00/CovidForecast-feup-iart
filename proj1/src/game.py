@@ -72,14 +72,10 @@ class Game:
 
         # new_node.draw_node_in_terminal()
 
-
-
     def run(self):
         """
         Main method of the game class. Contains the main game cycle.
         """
-
-
         while self.game_state != GameState.EXIT:
 
             if self.first_cycle:
@@ -141,13 +137,14 @@ class Game:
                 else: # end play state
 
                     # to give time for the player to see which player has won the game
-                    if self.time_passed > 4:
+                    if self.time_passed < 4:
+                        self.process_events("ENDGAME")
+                    elif self.time_passed > 4:
                         self.interface.end_game()
                         self.game_state = GameState.GAME_OVER
 
 
             elif self.game_state != GameState.EXIT:
-                print("entrei aqui")
                 self.game_state = self.menu.handle_menu_state(self.game_state)
 
 
@@ -162,11 +159,12 @@ class Game:
             # quit the game
                 if event == 'EVENT_QUIT':
                     self.play_state = PlayState.END
+                    self.time_passed = 0
 
                 # if the mouse button was pressed
                 elif event == 'EVENT_MOUSEBUTTONDOWN':
                     self.handle_mouse_event()
-                    self.time_passed = 0
+
         elif current_player == "COMPUTER":
             for event in event_queue:
                 if event == 'EVENT_QUIT':
@@ -176,6 +174,12 @@ class Game:
                 elif event == 'EVENT_MOUSEBUTTONDOWN':
                     print("AI is still playing!")
             self.make_move_ai()
+
+        elif current_player == "ENDGAME":
+            for event in event_queue:
+                if event == 'EVENT_MOUSEBUTTONDOWN':
+                    print("Game is ending soon!")
+
 
 
     def handle_mouse_event(self):

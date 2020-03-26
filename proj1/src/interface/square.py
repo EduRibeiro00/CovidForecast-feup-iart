@@ -1,8 +1,7 @@
 import pygame
 import time
 from .colors import Colors
-from .interface_consts import BLINKING_TIME
-from .interface_consts import SQUARE_SIZE, FONT_SIZE, FONT_FILE
+from .interface_consts import BLINKING_TIME, FONT_SIZE, FONT_FILE
 
 class Square:
     """
@@ -21,7 +20,6 @@ class Square:
         self.before = 0
         self.delta = 0
         self.time = 0
-        self.font = pygame.font.Font(FONT_FILE, FONT_SIZE)
 
     def set_piece(self, piece):
         """
@@ -62,28 +60,30 @@ class Square:
         pygame.draw.rect(screen, self.color, [(square_size * self.x) + 50, (square_size * self.y) + 50, square_size, square_size])
 
 
+        font = pygame.font.Font(FONT_FILE, FONT_SIZE)
+
         if self.x == 0 and self.y != 0:
 
-            text = self.font.render(str(self.y), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+            text = font.render(str(self.y), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
             text_rect = text.get_rect()
             text_rect.center = (square_size * self.x + 30, square_size * self.y + 50 + square_size / 2)
-            screen.blit(text,text_rect)
+            screen.blit(text, text_rect)
 
         elif self.y == 0 and self.x != 0:
 
-            text = self.font.render(chr(65 + self.x), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
-            text_rect = text.get_rect()
-            text_rect.center = ( square_size * self.x + 50 + square_size / 2, square_size * self.y + 30)
-            screen.blit(text, text_rect)
-
-        elif self.y == 0 and self.x == 0:
-
-            text = self.font.render(chr(65), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+            text = font.render(chr(65 + self.x), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
             text_rect = text.get_rect()
             text_rect.center = (square_size * self.x + 50 + square_size / 2, square_size * self.y + 30)
             screen.blit(text, text_rect)
 
-            text = self.font.render(str(self.y), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+        elif self.y == 0 and self.x == 0:
+
+            text = font.render(chr(65), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+            text_rect = text.get_rect()
+            text_rect.center = (square_size * self.x + 50 + square_size / 2, square_size * self.y + 30)
+            screen.blit(text, text_rect)
+
+            text = font.render(str(self.y), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
             text_rect = text.get_rect()
             text_rect.center = (square_size * self.x + 30, square_size * self.y + 50 + square_size / 2)
             screen.blit(text, text_rect)
