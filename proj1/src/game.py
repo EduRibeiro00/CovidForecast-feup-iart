@@ -560,62 +560,6 @@ class Game:
 
             self.time_passed = 0
 
-
-        """
-        OLD VERSION, WORKING BUT UGLY
-        """
-        """
-        if self.first_turn:
-            self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
-            self.current_board[self.soldier_move[0][0]][self.soldier_move[0][1]] = BLANK_SPACE_CHAR
-            self.current_board[self.soldier_move[1][0]][self.soldier_move[1][1]] = self.player_piece
-            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
-            self.first_turn = False
-            self.current_player = self.opponent_player
-            self.calculated_moves = False
-            self.time_passed = 0
-
-        else:
-            if not self.second_move:
-                self.current_board[self.neutron_move[0][0]][self.neutron_move[0][1]] = BLANK_SPACE_CHAR
-                self.current_board[self.neutron_move[1][0]][self.neutron_move[1][1]] = NEUTRON_CHAR
-
-                end, winner_state =  self.check_game_end()
-                if end:
-                    self.play_state = winner_state
-                else:
-                    self.second_move = True
-
-                    if self.current_player == PLAYER_A:
-                        self.play_state = PlayState.PLAYER_A_MOVING_SOLDIER
-                    elif self.current_player == PLAYER_B:
-                        self.play_state = PlayState.PLAYER_B_MOVING_SOLDIER
-
-                self.time_passed = 0
-
-
-            elif self.second_move:
-
-                if self.time_passed > 3:
-
-                    self.current_board[self.soldier_move[0][0]][self.soldier_move[0][1]] = BLANK_SPACE_CHAR
-                    self.current_board[self.soldier_move[1][0]][self.soldier_move[1][1]] = self.player_piece
-
-                    end, winner_state = self.check_game_end()
-                    if end:
-                        self.play_state = winner_state
-                    else:
-                        if self.current_player == PLAYER_B:
-                            self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
-                        elif self.current_player == PLAYER_A:
-                            self.play_state = PlayState.PLAYER_B_CHOOSING_NEUTRON
-
-                    self.current_player = self.opponent_player
-                    self.second_move = False
-                    self.time_passed = 0
-                    self.calculated_moves = False
-        """
-
     def calculate_minimax_thread(self):
 
         node = Node(self.current_board, self.size)
