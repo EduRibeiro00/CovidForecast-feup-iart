@@ -109,32 +109,80 @@ def recursive_minimax(node_tuple, evaluator, first_turn, max_depth, player_char,
 
 def get_node_pairs(node, player_char, first_turn):
     if first_turn:
-        possible_neutron_nodes = [node]
+        for i in range(node.board_size):
+            for j in range(node.board_size):
+                if ((player_char == PLAYER_A and node.get_board()[i][
+                    j] == PLAYER_A_SOLDIER_CHAR) or
+                        (player_char == PLAYER_B and node.get_board()[i][
+                            j] == PLAYER_B_SOLDIER_CHAR)):
+                    for op in operators:
+                        new_board = op(node, j, i)
+                        if new_board is not None:
+                            new_node = Node(new_board, node.board_size)
+                            _, winner = new_node.is_final_state_soldier(player_char)
+                            # print("Generated state 2: ")
+                            # new_node.draw_node_in_terminal()
+                            yield (new_node, winner)
     else:
-        possible_neutron_nodes = []
         neutron_x, neutron_y = node.get_neutron_coordinates()
         for op in operators:
             new_board = op(node, neutron_x, neutron_y)
             if new_board is not None:
                 new_node = Node(new_board, node.board_size)
-                end, winner = new_node.is_final_state_neutron(neutron_y)
+                end, winner = new_node.is_final_state_neutron()
                 if end:
+                    # print("Generated state 1 : ")
+                    # new_node.draw_node_in_terminal()
                     yield (new_node, winner)
                 else:
-                    possible_neutron_nodes.append(new_node)
+                    for i in range(new_node.board_size):
+                        for j in range(new_node.board_size):
+                            if ((player_char == PLAYER_A and new_node.get_board()[i][
+                                j] == PLAYER_A_SOLDIER_CHAR) or
+                                    (player_char == PLAYER_B and new_node.get_board()[i][
+                                        j] == PLAYER_B_SOLDIER_CHAR)):
+                                for op in operators:
+                                    new_board = op(new_node, j, i)
+                                    if new_board is not None:
+                                        new_soldier_node = Node(new_board, node.board_size)
+                                        _, winner = new_soldier_node.is_final_state_soldier(player_char)
+                                        # print("Generated state 2: ")
+                                        # new_node.draw_node_in_terminal()
+                                        yield (new_soldier_node, winner)
 
 
-    for possible_neutron_node in possible_neutron_nodes:
-        for i in range(node.board_size):
-            for j in range(node.board_size):
-                if ((player_char == PLAYER_A and node.get_board()[i][j] == PLAYER_A_SOLDIER_CHAR) or
-                    (player_char == PLAYER_B and node.get_board()[i][j] == PLAYER_B_SOLDIER_CHAR)):
-                    for op in operators:
-                        new_board = op(possible_neutron_node, j, i)
-                        if new_board is not None:
-                            new_node = Node(new_board, node.board_size)
-                            _, winner = new_node.is_final_state_soldier(player_char)
-                            yield (new_node, winner)
+
+    # if first_turn:
+    #     possible_neutron_nodes = [node]
+    # else:
+    #     possible_neutron_nodes = []
+    #     neutron_x, neutron_y = node.get_neutron_coordinates()
+    #     for op in operators:
+    #         new_board = op(node, neutron_x, neutron_y)
+    #         if new_board is not None:
+    #             new_node = Node(new_board, node.board_size)
+    #             end, winner = new_node.is_final_state_neutron()
+    #             if end:
+    #                 # print("Generated state 1 : ")
+    #                 # new_node.draw_node_in_terminal()
+    #                 yield (new_node, winner)
+    #             else:
+    #                 possible_neutron_nodes.append(new_node)
+    #
+    #
+    # for possible_neutron_node in possible_neutron_nodes:
+    #     for i in range(possible_neutron_node.board_size):
+    #         for j in range(possible_neutron_node.board_size):
+    #             if ((player_char == PLAYER_A and possible_neutron_node.get_board()[i][j] == PLAYER_A_SOLDIER_CHAR) or
+    #                 (player_char == PLAYER_B and possible_neutron_node.get_board()[i][j] == PLAYER_B_SOLDIER_CHAR)):
+    #                 for op in operators:
+    #                     new_board = op(possible_neutron_node, j, i)
+    #                     if new_board is not None:
+    #                         new_node = Node(new_board, node.board_size)
+    #                         _, winner = new_node.is_final_state_soldier(player_char)
+    #                         # print("Generated state 2: ")
+    #                         # new_node.draw_node_in_terminal()
+    #                         yield (new_node, winner)
 
 
     # if first_turn:

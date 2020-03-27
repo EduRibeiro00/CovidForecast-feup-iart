@@ -36,11 +36,12 @@ class Node:
                 return True
         return False
 
-    def is_final_state_neutron(self, neutron_y):
+    def is_final_state_neutron(self):
         """
         Determines whether the state is final, after moving the neutron.
         That is, if the neutron is in the first row of any of the players.
         """
+        _, neutron_y = self.get_neutron_coordinates()
         if neutron_y == 0:
             return True, PLAYER_B
         elif neutron_y == self.board_size - 1:

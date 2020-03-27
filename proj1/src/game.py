@@ -52,23 +52,23 @@ class Game:
 
         board = [['B', 'B', 'B', 'B', 'B'],
                  [' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', ' ', 'W', 'N'],
+                 [' ', 'N', ' ', ' ', ' '],
+                 [' ', ' ', ' ', 'W', ' '],
                  ['W', 'W', 'W', 'W', ' '],]
 
         node = Node(board, self.size)
-        current_node = Node(self.current_board, self.size)
-
-        current_node.draw_node_in_terminal()
+        # current_node = Node(self.current_board, self.size)
+        # current_node.draw_node_in_terminal()
         node.draw_node_in_terminal()
 
+        new_node = calculate_minimax(node, heuristic_function_simple, False, 3, PLAYER_A, PLAYER_B)
 
+        new_node.draw_node_in_terminal()
 
-        print(determine_moves_neutron_soldier(self.current_board, board, self.size))
+        neutron_play, soldier_play = determine_moves_neutron_soldier(node.board, new_node.board, node.board_size)
 
-        #new_node =  calculate_minimax(node, heuristic_function_simple, False, 5, PLAYER_A, PLAYER_B)
+        print(neutron_play, soldier_play)
 
-        # new_node.draw_node_in_terminal()
 
      # -------------------
 

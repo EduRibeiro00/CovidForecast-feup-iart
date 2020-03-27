@@ -26,10 +26,11 @@ def heuristic_function_simple(node, current_player):
                 for j in range(-1, 2):
                     for i in range(-1, 2):
 
-                        if x + i < 0 or x + i >= node.board_size or y + i < 0 or y + i >= node.board_size:
+                        if x + i < 0 or x + i >= node.board_size or y + j < 0 or y + j >= node.board_size:
                             continue
                         elif node.board[y+j][x+i] == PLAYER_A_SOLDIER_CHAR or node.board[y+j][x+i] == PLAYER_B_SOLDIER_CHAR:
                             surrounding_soldiers += 1
+
 
     return alpha * neutron_distance + beta * surrounding_soldiers
 
