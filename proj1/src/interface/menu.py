@@ -1,4 +1,5 @@
 from state.game_state import GameState
+from ai.heuristic import *
 
 HUMAN_VS_HUMAN = "H / H"
 COMPUTER_VS_HUMAN = "C / H"
@@ -15,8 +16,15 @@ class Menu:
         Constructor of the class.
         """
         self.board_size = 5
+
         self.difficulty_player_a = 'Medium'
+        self.evaluator_a = heuristic_function_medium
+        self.max_depth_a = 2
+
         self.difficulty_player_b = 'Medium'
+        self.evaluator_b = heuristic_function_medium
+        self.max_depth_b = 2
+
         self.game_mode = 'H / H'
 
 
@@ -156,15 +164,26 @@ class Menu:
 
         if input == 1:
             difficulty = 'Easy'
+            evaluator = heuristic_function_easy
+            max_depth = 1
         elif input == 2:
             difficulty = 'Medium'
+            evaluator = heuristic_function_medium
+            max_depth = 2
         else:
             difficulty = 'Hard'
+            evaluator = heuristic_function_hard
+            max_depth = 3
 
         if player == 'a':
             self.difficulty_player_a = difficulty
+            self.evaluator_a = evaluator
+            self.max_depth_a = max_depth
         else:
             self.difficulty_player_b = difficulty
+            self.evaluator_b = evaluator
+            self.max_depth_b = max_depth
+
 
         return GameState.MAIN_MENU
 

@@ -61,7 +61,7 @@ class Game:
         # current_node.draw_node_in_terminal()
         node.draw_node_in_terminal()
 
-        new_node = calculate_minimax(node, heuristic_function_simple, False, 3, PLAYER_A, PLAYER_B)
+        new_node = calculate_minimax(node, heuristic_function_medium, False, 3, PLAYER_A, PLAYER_B)
 
         new_node.draw_node_in_terminal()
 
@@ -563,10 +563,18 @@ class Game:
 
 
     def calculate_minimax_thread(self):
-        # TODO: usar cenas do menu (max_depth e funcao heuristica) para passar para esta funcao
+        """
+        Function
+        """
+        if self.current_player == PLAYER_A:
+            evaluator = self.menu.evaluator_a
+            max_depth = self.menu.max_depth_a
+        else:
+            evaluator = self.menu.evaluator_b
+            max_depth = self.menu.max_depth_b
 
         node = Node(self.current_board, self.size)
-        new_node = calculate_minimax(node, heuristic_function_simple, self.first_turn, 3, self.current_player, self.opponent_player)
+        new_node = calculate_minimax(node, evaluator, self.first_turn, max_depth, self.current_player, self.opponent_player)
         self.neutron_move, self.soldier_move = determine_moves_neutron_soldier(self.current_board, new_node.board, self.size)
         self.calculated_moves = True
         self.time_passed = 0
