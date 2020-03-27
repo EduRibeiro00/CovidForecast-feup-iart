@@ -5,8 +5,8 @@ def heuristic_function_simple(node, current_player):
     Simple heuristic function, that takes into account the distance of the neutron
     to the player's first row, and the number of pieces surrounding the neutron.
     """
-    alpha = 2
-    beta = 1
+    alpha = 25
+    beta = 10
 
     neutron_distance = 0
     surrounding_soldiers = 0
