@@ -42,13 +42,14 @@ class Game:
         """
         self.size = self.menu.get_board_size()
         self.current_board = create_initial_board(self.size) # create board with the wanted size
-
+        self.scores_hashmap = {}
 
      # -------------------
      # TODO: apagar depois de testar
 
     def test_minimax(self):
         self.adapt_to_board_size()
+        score_hashmap = {}
 
         board5 = [['B', 'B', 'B', 'B', 'B'],
                  [' ', ' ', ' ', ' ', ' '],
@@ -64,11 +65,11 @@ class Game:
                  [' ', ' ', ' ', ' ', ' ', ' ', ' '],
                  ['W', 'W', 'W', 'W', 'W', 'W', 'W']]
 
-        # node = Node(board5, 5)
-        node = Node(board7, 7)
+        node = Node(board5, 5)
+        # node = Node(board7, 7)
         node.draw_node_in_terminal()
 
-        new_node = calculate_minimax(node, heuristic_function_medium, False, 3, PLAYER_A, PLAYER_B)
+        new_node = calculate_minimax(node, score_hashmap, heuristic_function_medium, False, 4, PLAYER_A, PLAYER_B)
 
         new_node.draw_node_in_terminal()
 
@@ -581,7 +582,7 @@ class Game:
             max_depth = self.menu.max_depth_b
 
         node = Node(self.current_board, self.size)
-        new_node = calculate_minimax(node, evaluator, self.first_turn, max_depth, self.current_player, self.opponent_player)
+        new_node = calculate_minimax(node, self.scores_hashmap, evaluator, self.first_turn, max_depth, self.current_player, self.opponent_player)
         self.neutron_move, self.soldier_move = determine_moves_neutron_soldier(self.current_board, new_node.board, self.size)
         self.calculated_moves = True
         self.time_passed = 0
