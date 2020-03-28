@@ -50,15 +50,22 @@ class Game:
     def test_minimax(self):
         self.adapt_to_board_size()
 
-        board = [['B', 'B', 'B', 'B', 'B'],
+        board5 = [['B', 'B', 'B', 'B', 'B'],
                  [' ', ' ', ' ', ' ', ' '],
-                 [' ', 'N', ' ', ' ', ' '],
-                 [' ', ' ', ' ', 'W', ' '],
-                 ['W', 'W', 'W', 'W', ' '],]
+                 [' ', ' ', 'N', ' ', ' '],
+                 [' ', ' ', ' ', ' ', ' '],
+                 ['W', 'W', 'W', 'W', 'W']]
 
-        node = Node(board, self.size)
-        # current_node = Node(self.current_board, self.size)
-        # current_node.draw_node_in_terminal()
+        board7 = [['B', 'B', 'B', 'B', 'B' , 'B', 'B'],
+                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                 [' ', ' ', ' ', 'N', ' ', ' ', ' '],
+                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                 ['W', 'W', 'W', 'W', 'W', 'W', 'W']]
+
+        # node = Node(board5, 5)
+        node = Node(board7, 7)
         node.draw_node_in_terminal()
 
         new_node = calculate_minimax(node, heuristic_function_medium, False, 3, PLAYER_A, PLAYER_B)
