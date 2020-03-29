@@ -128,8 +128,14 @@ class GameInterface:
         for square in self.squares:
             if square.collision(SQUARE_SIZE, mouse_x, mouse_y):
                 return square
-
         return None
+
+    def check_hint_button_pressed(self):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if mouse_x >= (self.screen_width - 150) and mouse_y >= (self.screen_height // 4 + self.soldier_height + 183) and mouse_x <=  (self.screen_width - 50) and mouse_y <= (self.screen_height // 4 + self.soldier_height + 183 +25):
+            return True
+        return False
+
 
 
     def highlight_squares(self, coords):
@@ -165,7 +171,7 @@ class GameInterface:
         self.get_square_in_coords(x, y).selected = False
 
 
-    def display_turn_information(self, state):
+    def display_turn_information(self, state, number_of_hints, ai_turn, neutron_move, soldier_move, calculated_hint):
         """
         Method that displays the turn information on the screen, like which player has the current turn
         and what type of piece they should move.
@@ -182,16 +188,45 @@ class GameInterface:
             move_piece_text_rect = current_player_text.get_rect()
 
             # set the center of the rectangular object.
-            current_player_text_rect.center = (self.screen_width - 100 , self.screen_height // 4)
-            move_piece_text_rect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 50)
+            current_player_text_rect.center = (self.screen_width - 100 , self.screen_height // 4 - 20)
+            move_piece_text_rect.center = (self.screen_width - 85, self.screen_height // 4 + self.soldier_height + 30)
 
             self.screen.blit(current_player_text, current_player_text_rect)
             self.screen.blit(move_piece_text, move_piece_text_rect)
 
             current_player_image, move_piece_image = self.calc_imgs_turn_info(state)
 
-            self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
-            self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 ))
+            self.screen.blit(current_player_image, (self.screen_width - 135, self.screen_height // 4 - 5))
+            self.screen.blit(move_piece_image, (self.screen_width - 135, self.screen_height // 4 + self.soldier_height * 2 - 20))
+
+            if not ai_turn:
+                hint_text = font.render('Hints: ' + str(number_of_hints), True, Colors.TEXT_COLOR.value,
+                                        Colors.TEXT_BACKGROUND_COLOR.value)
+
+
+                hint_text_rect = hint_text.get_rect()
+                hint_text_rect.center = (self.screen_width - 100, self.screen_height // 4 + self.soldier_height + 155)
+                self.screen.blit(hint_text, hint_text_rect)
+
+                # pygame.draw.rect(self.screen, Colors.TEXT_BACKGROUND_COLOR.value, [self.screen_width - 150, self.screen_height - 90, 100, 25])
+                if not calculated_hint:
+                    hint_button_text = font.render('Get hint', True, Colors.TEXT_COLOR.value,
+                                                   Colors.TEXT_BACKGROUND_COLOR.value)
+                else:
+                    if state == PlayState.PLAYER_A_CHOOSING_SOLDIER or state == PlayState.PLAYER_A_MOVING_SOLDIER or state == PlayState.PLAYER_B_MOVING_SOLDIER or state == PlayState.PLAYER_B_CHOOSING_SOLDIER and soldier_move != None:
+                        hint_button_text = font.render(str(soldier_move[0][0]) + chr(soldier_move[0][1] + 65) + " --> " + str(soldier_move[1][0]) + chr(soldier_move[1][1] + 65) , True, Colors.TEXT_COLOR.value,
+                                                       Colors.TEXT_BACKGROUND_COLOR.value)
+                    elif neutron_move != None:
+                        hint_button_text = font.render(str(neutron_move[0][0]) + chr(neutron_move[0][1] + 65) + " --> " + str(neutron_move[1][0]) + chr(neutron_move[1][1] + 65), True, Colors.TEXT_COLOR.value, Colors.TEXT_BACKGROUND_COLOR.value)
+                rect2 = pygame.Rect(self.screen_width - 150, self.screen_height // 4 + self.soldier_height + 183, 100,
+                                    25)
+                self.round_rect(self.screen, rect2, 10, Colors.TEXT_BACKGROUND_COLOR.value, 0)
+                hint_button_text_rect = hint_button_text.get_rect()
+                hint_button_text_rect.center = (
+                self.screen_width - 150 + 50, self.screen_height // 4 + self.soldier_height + 195)
+                self.screen.blit(hint_button_text, hint_button_text_rect)
+
+
 
         else:
         # create a text surface object, on which text is drawn on it.
@@ -203,6 +238,30 @@ class GameInterface:
             self.screen.blit(winner_player_text, winner_player_text_rect)
             self.screen.blit(winner_player_image, (self.screen_width - 135, self.screen_height // 4 + 15))
 
+    def round_rect(self, surf, rect, rad, color, thick=0):
+        if not rad:
+            pygame.draw.rect(surf, color, rect, thick)
+        elif rad > rect.width / 2 or rad > rect.height / 2:
+            rad = min(rect.width / 2, rect.height / 2)
+
+        if thick > 0:
+            r = rect.copy()
+            x, r.x = r.x, 0
+            y, r.y = r.y, 0
+            buf = pygame.surface.Surface((rect.width, rect.height)).convert_alpha()
+            buf.fill((0, 0, 0, 0))
+            self.round_rect(buf, r, rad, color, 0)
+            r = r.inflate(-thick * 2, -thick * 2)
+            self.round_rect(buf, r, rad, (0, 0, 0, 0), 0)
+            surf.blit(buf, (x, y))
+
+
+        else:
+            r = rect.inflate(-rad * 2, -rad * 2)
+            for corn in (r.topleft, r.topright, r.bottomleft, r.bottomright):
+                pygame.draw.circle(surf, color, corn, rad)
+            pygame.draw.rect(surf, color, r.inflate(rad * 2, 0))
+            pygame.draw.rect(surf, color, r.inflate(0, rad * 2))
 
     def calc_img_text_winner(self, state, font):
 
@@ -247,6 +306,7 @@ class GameInterface:
             move_piece_image = None
 
         return current_player_image, move_piece_image
+
 
 
     def flip(self):

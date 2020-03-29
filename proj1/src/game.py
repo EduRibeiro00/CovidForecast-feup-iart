@@ -29,11 +29,18 @@ class Game:
         self.first_turn = True
         self.calculated_moves = False
 
+        self.player_A_hints = 3
+        self.player_B_hints = 3
+        self.calculated_hint = False
+        self.hint_started_threading = False
+
         self.before = 0
         self.time_passed = 0
         self.first_cycle = True
         self.started_threading = False
         self.blinking_ai = False
+
+
 
 
     def adapt_to_board_size(self):
@@ -103,20 +110,27 @@ class Game:
                 self.current_player = PLAYER_A
                 self.calculated_moves = False
                 self.started_threading = False
+                self.player_A_hints = 3
+                self.player_B_hints = 3
+                self.calculated_hint = False
+                self.hint_started_threading = False
 
 
             elif self.game_state == GameState.PLAY:
-
-
                 if self.play_state == PlayState.PLAYER_A_WINS or self.play_state == PlayState.PLAYER_B_WINS:
                     self.interface.draw_board(self.current_board)
-                    self.interface.display_turn_information(self.play_state)
+                    self.interface.display_turn_information(self.play_state, self.get_number_of_available_hints(), True, None, None, False)
                     self.interface.flip()
                     self.play_state = PlayState.END
 
                 elif self.play_state != PlayState.END:
                     self.interface.draw_board(self.current_board)
-                    self.interface.display_turn_information(self.play_state)
+
+                    if self.calculated_hint:
+                        self.interface.display_turn_information(self.play_state, self.get_number_of_available_hints(), self.is_ai_turn(),  self.neutron_move_hint, self.soldier_move_hint, self.calculated_hint)
+                    else:
+                        self.interface.display_turn_information(self.play_state, self.get_number_of_available_hints(), self.is_ai_turn(),  None, None, self.calculated_hint)
+
                     self.interface.flip()
 
                     if self.menu.game_mode == HUMAN_VS_HUMAN:
@@ -141,7 +155,6 @@ class Game:
 
 
                 else: # end play state
-
                     # to give time for the player to see which player has won the game
                     if self.time_passed < 4:
                         self.process_events(ENDGAME)
@@ -153,6 +166,30 @@ class Game:
             elif self.game_state != GameState.EXIT:
                 self.game_state = self.menu.handle_menu_state(self.game_state)
 
+    def is_ai_turn(self):
+        if self.menu.game_mode == HUMAN_VS_HUMAN:
+            return False
+
+        elif self.menu.game_mode == HUMAN_VS_COMPUTER:
+            if self.current_player == PLAYER_A:
+                return False
+            elif self.current_player == PLAYER_B:
+                return True
+
+        elif self.menu.game_mode == COMPUTER_VS_HUMAN:
+            if self.current_player == PLAYER_A:
+                return True
+            elif self.current_player == PLAYER_B:
+                return False
+
+        elif self.menu.game_mode == COMPUTER_VS_COMPUTER:
+            return True
+
+    def get_number_of_available_hints(self):
+        if self.current_player == PLAYER_A:
+            return self.player_A_hints
+        else:
+            return self.player_B_hints
 
     def process_events(self, current_player):
         """
@@ -197,7 +234,7 @@ class Game:
             # mouse coordinates
             square = self.interface.check_collision()
 
-            if square is not None:
+            if square is not None and not self.hint_started_threading:
                 # represents the columns
                 x = square.x
                 # represents the rows
@@ -226,6 +263,7 @@ class Game:
                             self.current_player = PLAYER_B
                             if self.first_turn:
                                 self.first_turn = False
+                            self.calculated_hint = False
                         self.interface.reset_highlight()
 
                     elif self.current_board[y][x] == PLAYER_A_SOLDIER_CHAR:
@@ -257,6 +295,7 @@ class Game:
                             self.time_passed = 0
                         else:
                             self.play_state = PlayState.PLAYER_A_CHOOSING_SOLDIER
+                            self.calculated_hint = False
                         self.interface.reset_highlight()
 
                 elif self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
@@ -280,6 +319,7 @@ class Game:
                         else:
                             self.play_state = PlayState.PLAYER_A_CHOOSING_NEUTRON
                             self.current_player = PLAYER_A
+                            self.calculated_hint = False
                         self.interface.reset_highlight()
                     elif self.current_board[y][x] == PLAYER_B_SOLDIER_CHAR:
                         self.interface.unset_selected_square(self.selected_piece_x, self.selected_piece_y)
@@ -310,7 +350,29 @@ class Game:
                             self.time_passed = 0
                         else:
                             self.play_state = PlayState.PLAYER_B_CHOOSING_SOLDIER
+                            self.calculated_hint = False
                         self.interface.reset_highlight()
+            else:
+                if self.interface.check_hint_button_pressed() and not self.is_ai_turn() and not self.calculated_hint and not self.hint_started_threading:
+                    if self.current_player == PLAYER_B:
+                        opponent_player = PLAYER_A
+                        current_player = PLAYER_B
+                        if self.player_B_hints > 0:
+                            _thread.start_new_thread(self.calculate_hint_thread,
+                                                     (current_player, opponent_player, deepcopy(self.current_board)))
+                            self.hint_started_threading = True
+                            self.player_B_hints -= 1
+
+                    elif self.current_player == PLAYER_A:
+                        opponent_player = PLAYER_B
+                        current_player = PLAYER_A
+                        if self.player_A_hints > 0:
+                            _thread.start_new_thread(self.calculate_hint_thread, (current_player, opponent_player, deepcopy(self.current_board)))
+                            self.hint_started_threading = True
+                            self.player_A_hints -= 1
+
+
+
 
 
 
@@ -453,6 +515,7 @@ class Game:
             self.started_threading = True
 
 
+
         if self.play_state == PlayState.PLAYER_A_CHOOSING_SOLDIER:
 
             if self.calculated_moves:
@@ -585,6 +648,19 @@ class Game:
         self.calculated_moves = True
         self.time_passed = 0
         self.started_threading = False
+
+    def calculate_hint_thread(self, current_player, opponent_player, current_board):
+
+        node = Node(self.current_board, self.size)
+        if self.play_state == PlayState.PLAYER_A_CHOOSING_SOLDIER or self.play_state == PlayState.PLAYER_A_MOVING_SOLDIER or self.play_state == PlayState.PLAYER_B_MOVING_SOLDIER or self.play_state == PlayState.PLAYER_B_CHOOSING_SOLDIER:
+            new_node = calculate_minimax(node, heuristic_function_hard, True, 1, current_player, opponent_player)
+        else:
+            new_node = calculate_minimax(node, heuristic_function_hard, self.first_turn, 1, current_player,
+                                         opponent_player)
+        self.neutron_move_hint, self.soldier_move_hint = determine_moves_neutron_soldier(current_board, new_node.board, self.size)
+        self.calculated_hint = True
+        self.hint_started_threading = False
+
 
 
     def get_neutron_piece(self):
