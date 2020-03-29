@@ -148,7 +148,6 @@ class Menu:
         """
         Method that shows the difficulty menu (for the specified player) to the user. Returns the new state for the game.
         """
-        # TODO: criar umas variaveis no menu (max_depth, heuristic_function) para cada player, que mudem consoante a diff
         print('---------------------------------')
         print('Choose an option:')
         print('1 -> Easy')

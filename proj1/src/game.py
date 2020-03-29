@@ -52,22 +52,22 @@ class Game:
         board5 = [['B', 'B', 'B', 'B', 'B'],
                  [' ', ' ', ' ', ' ', ' '],
                  [' ', ' ', 'N', ' ', ' '],
-                 [' ', ' ', ' ', ' ', ' '],
-                 ['W', 'W', 'W', 'W', 'W']]
+                 [' ', ' ', 'W', ' ', ' '],
+                 ['W', 'W', ' ', 'W', 'W']]
 
-        board7 = [['B', 'B', 'B', 'B', 'B' , 'B', 'B'],
+        board7 = [['B', 'B', 'B', 'B', ' ' , 'B', 'B'],
+                 [' ', ' ', ' ', 'W', ' ', ' ', ' '],
                  [' ', ' ', ' ', ' ', ' ', ' ', ' '],
                  [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', ' ', 'N', ' ', ' ', ' '],
-                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                 ['W', 'W', 'W', 'W', 'W', 'W', 'W']]
+                 ['N', ' ', ' ', ' ', ' ', ' ', ' '],
+                 [' ', ' ', ' ', ' ', 'B', ' ', ' '],
+                 ['W', 'W', 'W', ' ', 'W', 'W', 'W']]
 
         node = Node(board5, 5)
         # node = Node(board7, 7)
         node.draw_node_in_terminal()
 
-        new_node = calculate_minimax(node, heuristic_function_medium, False, 4, PLAYER_A, PLAYER_B)
+        new_node = calculate_minimax(node, heuristic_function_medium, False, 3, PLAYER_B, PLAYER_A)
 
         new_node.draw_node_in_terminal()
 

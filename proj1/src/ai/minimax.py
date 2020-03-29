@@ -47,11 +47,11 @@ def recursive_minimax(node_tuple, scores_cache, evaluator, first_turn, max_depth
     # calculate the player that has the current turn
     current_player = player_char if is_max_turn else opp_char
 
-    key = str((node.get_board(), node.depth, player_char))
+    key = str((node.get_board(), node.depth, current_player))
+
     # check if the score of the current node was already calculated
     # and is being kept in cache
     if key in scores_cache:
-        # print("Cache was used.")
         return None, scores_cache[key]
 
     # if the state should not be developed further, return its value.
@@ -104,7 +104,6 @@ def recursive_minimax(node_tuple, scores_cache, evaluator, first_turn, max_depth
         possible_node = possible_node_tuple[0]
 
         # recursively call minimax again on the possible node (depth first search)
-        possible_node.set_parent(node)
         next_board, next_score = recursive_minimax(possible_node_tuple, scores_cache, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
 
         # if the node is one that can be chosen has a the new board, instantiate the next_board variable
@@ -156,6 +155,7 @@ def get_node_tuple_children(node, current_player, first_turn):
                         new_board = op(node, j, i)
                         if new_board is not None:
                             new_node = Node(new_board, node.board_size)
+                            new_node.set_parent(node)
                             _, winner = new_node.is_final_state_soldier(current_player)
                             yield (new_node, winner)
     else:
@@ -168,6 +168,7 @@ def get_node_tuple_children(node, current_player, first_turn):
                 end, winner = new_node.is_final_state_neutron()
                 # if the state is already final, don't move a piece
                 if end:
+                    new_node.set_parent(node)
                     yield (new_node, winner)
                 else:
                     for i in range(new_node.board_size):
@@ -180,5 +181,6 @@ def get_node_tuple_children(node, current_player, first_turn):
                                     new_board = op(new_node, j, i)
                                     if new_board is not None:
                                         new_soldier_node = Node(new_board, node.board_size)
+                                        new_soldier_node.set_parent(node)
                                         _, winner = new_soldier_node.is_final_state_soldier(current_player)
                                         yield (new_soldier_node, winner)
