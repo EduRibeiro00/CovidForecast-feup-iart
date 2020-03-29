@@ -44,7 +44,7 @@ class Game:
         self.current_board = create_initial_board(self.size) # create board with the wanted size
 
      # -------------------
-     # TODO: apagar depois de testar
+     # TODO: apagar depois de testar (USAR PARA MEDIR TEMPOS PARA O RELATORIO)
 
     def test_minimax(self):
         self.adapt_to_board_size()
@@ -55,19 +55,19 @@ class Game:
                  [' ', ' ', 'W', ' ', ' '],
                  ['W', 'W', ' ', 'W', 'W']]
 
-        board7 = [['B', 'B', 'B', 'B', ' ' , 'B', 'B'],
-                 [' ', ' ', ' ', 'W', ' ', ' ', ' '],
+        board7 = [['B', 'B', 'B', 'B', 'B' , 'B', 'B'],
                  [' ', ' ', ' ', ' ', ' ', ' ', ' '],
                  [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                 ['N', ' ', ' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', ' ', ' ', 'B', ' ', ' '],
-                 ['W', 'W', 'W', ' ', 'W', 'W', 'W']]
+                 [' ', ' ', ' ', 'N', ' ', ' ', ' '],
+                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                 ['W', 'W', 'W', 'W', 'W', 'W', 'W']]
 
-        node = Node(board5, 5)
-        # node = Node(board7, 7)
+        # node = Node(board5, 5)
+        node = Node(board7, 7)
         node.draw_node_in_terminal()
 
-        new_node = calculate_minimax(node, heuristic_function_medium, False, 3, PLAYER_B, PLAYER_A)
+        new_node = calculate_minimax(node, heuristic_function_hard, False, 3, PLAYER_B, PLAYER_A)
 
         new_node.draw_node_in_terminal()
 
@@ -75,7 +75,7 @@ class Game:
 
         print(neutron_play, soldier_play)
 
-        
+
      # -------------------
 
 
