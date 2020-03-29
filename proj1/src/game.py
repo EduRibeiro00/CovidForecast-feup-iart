@@ -77,6 +77,19 @@ class Game:
         print(neutron_play, soldier_play)
 
 
+    def test_heuristic(self):
+        self.adapt_to_board_size()
+
+        board5 = [['B', 'B', 'B', 'B', ' '],
+                 [' ', ' ', ' ', ' ', ' '],
+                 [' ', ' ', 'N', ' ', ' '],
+                 [' ', ' ', ' ', ' ', ' '],
+                 [' ', 'W', ' ', 'W', 'W']]
+
+        node = Node(board5, 5)
+        
+        print(heuristic_function_hard(node, PLAYER_A))
+        
      # -------------------
 
 

@@ -55,7 +55,7 @@ def heuristic_function_hard(node, current_player):
     """
     alpha = 25
     beta = 10
-    gamma = 12
+    gamma = 40
     delta = -200
 
     x, y = node.get_neutron_coordinates()
