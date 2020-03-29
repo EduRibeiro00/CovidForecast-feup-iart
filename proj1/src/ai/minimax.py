@@ -7,7 +7,7 @@ BEST_VALUE_MINIMAX = 10000 # state value if the current player has won the game
 WORST_VALUE_MINIMAX = -10000 # state value if the opponent player has won the game
 
 
-def calculate_minimax(node, scores_hashmap, evaluator, first_turn, max_depth, player_char, opp_char):
+def calculate_minimax(node, evaluator, first_turn, max_depth, player_char, opp_char):
     """
     Function that will calculate the best state from the current state,
     for the specified player, with a fixed max depth level.
@@ -19,7 +19,10 @@ def calculate_minimax(node, scores_hashmap, evaluator, first_turn, max_depth, pl
     print("Computing minimax algorithm...")
     start_time = time.time()
 
-    best_board, best_score = recursive_minimax((node, None), scores_hashmap, evaluator, first_turn, max_depth, player_char, opp_char, True, float("-inf"), float("inf"))
+    scores_cache = {}
+
+    best_board, best_score = recursive_minimax((node, None), scores_cache, evaluator, first_turn, max_depth, player_char, opp_char, True, float("-inf"), float("inf"))
+    print("Cache has {} entries.".format(len(scores_cache)))
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -30,7 +33,7 @@ def calculate_minimax(node, scores_hashmap, evaluator, first_turn, max_depth, pl
     return new_node
 
 
-def recursive_minimax(node_tuple, scores_hashmap, evaluator, first_turn, max_depth, player_char, opp_char, is_max_turn, alpha, beta):
+def recursive_minimax(node_tuple, scores_cache, evaluator, first_turn, max_depth, player_char, opp_char, is_max_turn, alpha, beta):
     """
     Represents an "iteration" of the minimax algorithm.
     Alpha beta pruning and node ordering are implemented.
@@ -44,23 +47,31 @@ def recursive_minimax(node_tuple, scores_hashmap, evaluator, first_turn, max_dep
     # calculate the player that has the current turn
     current_player = player_char if is_max_turn else opp_char
 
+    key = str((node.get_board(), node.depth, player_char))
+    # check if the score of the current node was already calculated
+    # and is being kept in cache
+    if key in scores_cache:
+        # print("Cache was used.")
+        return None, scores_cache[key]
+
     # if the state should not be developed further, return its value.
     # This happens when the state if final (winner exists) or when
     # the maximum depth was reached.
     if winner == player_char:
-        return None, BEST_VALUE_MINIMAX
+        score = BEST_VALUE_MINIMAX
+        # store the score value in the cache
+        scores_cache[key] = score
+        return None, score
     elif winner == opp_char:
-        return None, WORST_VALUE_MINIMAX
+       score = WORST_VALUE_MINIMAX
+       # store the score value in the cache
+       scores_cache[key] = score
+       return None, score
     elif node.depth == max_depth:
-        key = str((node.get_board(), player_char))
-        # if the score was already calculated
-        if key in scores_hashmap:
-            return None, scores_hashmap[key]
-        else:
-            # calculate the score and store it for future use
-            score = evaluator(node, player_char)
-            scores_hashmap[key] = score
-            return None, score
+        score = evaluator(node, player_char)
+        # store the score value in the cache
+        scores_cache[key] = score
+        return None, score
 
 
     # extract generator for the possible nodes
@@ -73,6 +84,7 @@ def recursive_minimax(node_tuple, scores_hashmap, evaluator, first_turn, max_dep
         possible_node_tuples = []
         for child_node_tuple in gen:
             if child_node_tuple[1] == player_char:
+                scores_cache[key] = BEST_VALUE_MINIMAX
                 return child_node_tuple[0].get_board(), BEST_VALUE_MINIMAX
 
             possible_node_tuples.append(child_node_tuple)
@@ -93,10 +105,10 @@ def recursive_minimax(node_tuple, scores_hashmap, evaluator, first_turn, max_dep
 
         # recursively call minimax again on the possible node (depth first search)
         possible_node.set_parent(node)
-        next_board, next_score = recursive_minimax(possible_node_tuple, scores_hashmap, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
+        next_board, next_score = recursive_minimax(possible_node_tuple, scores_cache, evaluator, False, max_depth, player_char, opp_char, not is_max_turn, alpha, beta)
 
         # if the node is one that can be chosen has a the new board, instantiate the next_board variable
-        if next_board == None and possible_node.depth == 1:
+        if possible_node.depth == 1:
             next_board = possible_node.get_board()
 
         # if it is maximizer's turn, choose the highest value state
@@ -117,7 +129,8 @@ def recursive_minimax(node_tuple, scores_hashmap, evaluator, first_turn, max_dep
             if beta <= alpha:
                 break
 
-
+    # store the score value in cache
+    scores_cache[key] = best_score
     return best_board, best_score
 
 
