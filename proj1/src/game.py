@@ -75,7 +75,7 @@ class Game:
 
         print(neutron_play, soldier_play)
 
-
+        
      # -------------------
 
 
