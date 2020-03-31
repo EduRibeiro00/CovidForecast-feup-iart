@@ -50,55 +50,6 @@ class Game:
         self.size = self.menu.get_board_size()
         self.current_board = create_initial_board(self.size) # create board with the wanted size
 
-     # -------------------
-     # TODO: apagar depois de testar (USAR PARA MEDIR TEMPOS PARA O RELATORIO)
-
-    def test_minimax(self):
-        self.adapt_to_board_size()
-
-        board5 = [['B', 'B', 'B', ' ', 'B'],
-                 [' ', ' ', 'N', ' ', ' '],
-                 [' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', 'W', 'B', ' '],
-                 ['W', 'W', ' ', 'W', 'W']]
-
-        board7 = [['B', 'B', 'B', 'B', ' ' , 'B', 'B'],
-                 [' ', ' ', ' ', 'N', ' ', ' ', ' '],
-                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                 [' ', ' ', ' ', 'W', 'B', ' ', ' '],
-                 ['W', 'W', 'W', ' ', 'W', 'W', 'W']]
-
-        
-        board11 = [['B', 'B', 'B', 'B', 'B', 'B', ' ' , 'B', 'B', 'B', 'B'],
-                  [' ', ' ', ' ', ' ', ' ', 'N', ' ', ' ', ' ', ' ', ' '],
-                  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],   
-                  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],                  
-                  [' ', ' ', ' ', ' ', ' ', 'W', 'B', ' ', ' ', ' ', ' '],
-                  ['W', 'W', 'W', 'W', 'W', ' ', 'W', 'W', 'W', 'W', 'W']]
-
-        node = Node(board5, 5)
-        # node = Node(board7, 7)
-        # node = Node(board11, 11)
-        node.draw_node_in_terminal()
-
-        new_node = calculate_minimax(node, heuristic_function_hard, False, 3, PLAYER_A, PLAYER_B)
-
-        new_node.draw_node_in_terminal()
-
-        neutron_play, soldier_play = determine_moves_neutron_soldier(node.board, new_node.board, node.board_size)
-
-        print(neutron_play, soldier_play)
-
-
-     # -------------------
-
 
     def run(self):
         """
