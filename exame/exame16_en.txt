@@ -1,0 +1,71 @@
+1-
+a) A pesquisa primeiro em profundidade não é considerada completa pois pode entrar em ciclos infinitos, expandindo sempre o mesmo ramo e nunca chegando a uma solução. De modo a evitar isto, pode-se evitar o aparecimento de estados repetidos, ao guardar uma estrutura adicional com todos os estados que vao sendo gerados. Caso um estado seja gerado outra vez, este nao é considerado e assim o aparecimento de ciclos torna-se impossível.
+
+b) Feito no caderno.
+
+c)
+i1: nao admissível. No estado final, quando se tem os 2 discos no terceiro poste, é o estado final por isso necessita de 0 movimentos, mas a heurística prevê 2.
+
+i2: é admissível, pois o número de movimentos que demora a chegar ao estado final nunca vai ser menor que o número de discos que não estão no poste 3. Se estiverem os 2 discos fora, vão ser precisos pelo menos 2 movimentos, se estiver 1 fora, vai ser preciso no mínimo um movimento.
+
+i3: é admissível, pois nunca sobrestima o custo até à solução final. Se um disco não está presente no poste 3, no mínimo falta um custo igual ao peso do mesmo.
+
+i4: é admissível, pois nunca sobrestima o custo até à solução final. Se um disco não está presente no poste 3, o custo final não é menor do que o peso do disco vezes a distância até ao poste 3.
+
+i5: é admissível. É semelhante à heurística h4, e a penalização for 0 funciona da mesma maneira, não sobrestimando se pen=0, se existir um disco menor no poste 3, é necssário tirá-lo de lá primeiro, o que irá custar pelo menos 2 (custo de o tirar de lá e voltar a por no poste 3), o que é maior que 1, logo a heurística nunca sobreestima.
+
+
+A melhor heurística é a i5, que é a heurística dentro das admissíveis que produz o valor mais alto, isto é mais perto do custo real até chegar á solução.
+
+
+d) Feito no caderno.
+
+3- O indivíduo pode ser representado por 12 bits, cada 4 bits codificando o número do lote indicado para um determinado tipo de atividade. De modo a tornar numa função de maximização, subtrai-se esse valor ao valor máximo possível 17+16+20=53. A função também deve penalizar os indivíduos que não cobrem as restrições impostas pelo problema: -100 por cada lote escolhido incorretamente
+
+O segundo indivíduo fica: 0 1 1 1  1 0 1 0  0 1 0 1
+
+a) A função de adaptação é a soma dos preços de cada lote selecionado.
+Ind. 1: 53 - (10+17+16) = 10
+Ind. 2: 53 - (14+20+17) = 2
+Ind. 3: 53 - (17+14+16) = 6
+Ind. 4: 53 - (10+13+12) = 18
+
+b) Elitismo: Ind. 4 passa
+
+Soma: 10+2+6+18 = 36
+p(Ind. 1) = 10 / 36 = 0.277 -> ]0, 0.277]
+p(Ind. 2) = 2  / 36 = 0.055 -> ]0.277, 0.332]
+p(Ind. 3) = 6  / 36 = 0.166 -> ]0.322, 0.5]
+p(Ind. 4) = 18 / 36 = 0.5   -> ]0.5, 1]
+
+0.87 -> ]0.5, 1] -> Ind. 4
+0.38 -> ]0.322, 0.5] -> Ind. 3
+0.58 -> ]0.5, 1] -> Ind. 4
+
+Seleção: Ind. 4, Ind. 4, Ind. 3, Ind. 4
+
+
+c) Uma estrategia de cruzamento pode ser, por exemplo, o cruzamento entre o 4 e 5 bit (a contar da esquerda), de modo a não gerar indivíduos inválidos.
+
+Ind. 1 -> 0 1 0 1  0 1 0 0  0 0 1 1
+Ind. 2 -> 0 1 1 1  1 0 1 0  0 1 0 1
+Ind. 3 -> 0 1 0 1  0 1 1 1  0 1 0 0
+Ind. 4 -> 1 0 0 1  0 0 1 0  0 0 0 1
+
+
+Ind. 4 (elitismo) -> passa logo
+Ind. 4 -> 0.33 < 0.75 -> cruza
+Ind. 3 -> 0.51 < 0.75 -> cruza
+Ind. 4 -> 0.84 > 0.75 -> não cruza
+
+População final:
+Ind. 4  -> 1 0 0 1  0 0 1 0  0 0 0 1
+Ind. 43 -> 1 0 0 1  0 1 1 1  0 1 0 0 -> mutação no 17º bit (mas fica inválido, por isso não muda)
+Ind. 34 -> 0 1 0 1  0 0 1 0  0 0 0 1
+Ind. 4  -> 1 0 0 1  0 0 1 0  0 0 0 1
+
+
+4-
+d) [3, +inf[
+   ]-inf, 3]
+   Um deles <=2, o outro 2.

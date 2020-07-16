@@ -1,0 +1,404 @@
+1-
+1.1-
+
+Representacao do estado: Array/lista com caracteres para cada posição. V se a peça for vermelha, B se for branca e x para o espaço vazio.
+Teste objetivo: Verificar se o estado atual é o estado final que nos desejamos, ou seja, [B B B x V V V].
+
+Operadores:
+Como é referido, existem 3 tipos diferentes de movimentos possíveis, para cada peça. (Como cada peça apenas se pode mover numa direção, para cada peça temos 3 movimentos diferentes possíveis, antes de aplicar as pré-condições).
+
+Para cada peça, é possível:
+- fazer o movimento m1 se o espaço vazio estiver diretamente à sua direita, se for branca, ou esquerda, se for vermelha.
+- fazer o movimento m2 se na sua direção de movimento existe uma peça qualquer, e logo a seguir o espaço vazio.
+- fazer o movimento m3 se na sua direção de movimento existe uma peça qualquer, depois outra peça e a seguir o espaço vazio.
+
+Aplicando as pré-condições, cada peça poderá, portanto, ser movida no máximo de uma maneira.
+Para cada movimento/operador, o seu efeito é o movimento da peça em questão para o espaço vazio, sendo que o espaço vazio irá ficar no lugar em que a peça se encontrava.
+
+Função de custo:
+Sabendo que cada movimento/operador tem um custo associado, a função de custo irá somar o custo de todos os movimentos utilizados, de modo a obter o custo total do jogo.
+
+
+
+1.2-
+
+As heurísticas h1 e h2, por darem o mesmo valor constante a cada estado, nada dizem sobre a distância esperada até à solução, e por isso não acrescentam nenhuma informação útil para o algoritmo A* (utilizando a heurística h1, o algoritmo A* ficaria igual a fazer uma pesquisa de custo uniforme). 
+
+A heurística h3 oferece alguma informação ao algoritmo de modo a este saber se está longe ou não do estado final. De facto, se uma peça branca se encontrar nas posições 5, 6 ou 7 e se uma peça branca se encontrar nas posições 1, 2 ou 3, isso deve ser penalizado pois as peças não estão nas posições em que deviam estar. A função heurística h utilizada no algoritmo A* é suposto produzir um valor mais elevado para estados mais longe do estado final, e valores mais pequenos para estados mais perto do estado final. No entanto, a função pode falsamente indicar que se chegou ao estado final, ao produzir o valor 0 para um estado que de facto não é final. Por exemplo, para o estado [B B B x V V V], podemos observar que é final e que a função heurística h3 irá produzir o valor 0 de modo a avaliar este estado. Se 0 é a distância do estado atual ao estado final, podemos então admitir que o estado atual é um estado final, o que estaria correto neste caso. Mas se o estado atual for [B x B B V V V], a função h3 daria 0 também; no entanto, este estado não é final. Pode-se concluir então que a heurística h3, apesar de ser melhor do que as heurísticas h1 e h2 e oferecer mais informação sobre a distância do estado atual ao estado final, não é de qualquer modo ideal, sendo relativamente fácil arranjar uma heurística melhor.
+
+
+1.3-
+
+Uma possível heurística seria a soma das distâncias de cada peça à zona do tabuleiro em que deviam estar. Ou seja, para as peças brancas, se a posição estivesse entre 1 e 3, a distância seria 0, caso contrário seria a distância entre a posição da peça e a posição 3. Para as peças vermelhas a lógica seria a mesma, mas com as posições 5 a 7.
+
+
+Pseudo-código:
+
+def calc_h(board):
+   total = 0
+
+   for idx, cell in enumerate(board):
+       if cell == 'B':
+	 if idx	>=1 and idx <=3:
+	    continue
+         
+         total += (idx - 3)
+
+       elif cell == 'V':
+         if idx >=5 and idx <=7:
+            continue
+    
+         total += (5 - idx)
+
+
+    return total
+
+
+1.4- Feito no caderno.
+
+
+2- 
+2.1-
+
+Representação do problema: Array/lista com a ordem dos clientes a visitar. Ex: [2 1 5 3 4]
+
+Solução do problema: Arranjar uma ordenação dos clientes que permitisse produzir o valor mínimo da função de avaliação.
+
+Função de avaliação: Distância total percorrida no percurso de uma fábrica à outra, passando por todos os clientes da lista na ordem especificada. Ou seja, calcularia-se a distância da fábrica 1 até ao primeiro cliente, do primeiro cliente ao segundo cliente, ..., e do último cliente até à segunda fábrica. Os valores seriam todos somados para obter, então, a distância total percorrida.
+
+
+Pseudo-codigo para a função de avaliação:
+
+def aval_func(state):
+   total = 0
+
+   for idx, client in enumerate(state):
+      if idx == 1:
+	total += dist(fab_1, client)
+
+      elif idx == len(state)-1:
+        total += dist(client, state[idx-1])
+        total += dist(client, fab_2)
+        return total
+
+      else:
+        total += dist(client, state[idx-1])
+
+(Assumiu-se que se dispunha de uma função dist(x, y) que retornava a distância em linha reta entre os pontos x e y).
+
+
+2.2-
+
+Uma possível função de vizinhança para este problema pode ser a seguinte: para cada cliente na lista do estado atual, tentar trocá-lo de posição com o cliente à sua direita (podia também ser à esquerda, era igual).
+
+
+Pseudo-codigo para a função de vizinhança:
+
+(Assumiu-se que a função deveria retornar, de uma vez, todos os possíveis vizinhos do estado atual).
+
+def viz_func(state):
+    neighbours =[]
+    for idx in len(state)-1:
+        neighbour = copy(state)
+        place = neighbour[idx]
+        neighbours[idx] = neighbour[idx+1]
+        neighbour[idx+1] = place
+        neighbours.append(neighbour)
+        
+    return neighbours
+
+
+2.3-
+
+Foi utilizada a versão steepest ascent do hill-climbing, que gera todos os vizinhos do estado atual e escolhe aquele que se prova ser mais vantajoso, através da função de avaliação.
+
+Codigo em Python:
+
+
+import math
+from copy import copy
+from random import shuffle
+
+class Place:
+    def __init__(self, id, x, y):
+        self.id = id
+        self.x = x
+        self.y = y
+
+    def print(self):
+        print("Id: {}; x = {}; y = {}".format(self.id, self.x, self.y))
+
+
+def dist(place1, place2):
+    return math.sqrt(math.pow(place1.x - place2.x, 2) + math.pow(place1.y - place2.y, 2))
+
+def aval_func(state, fab_1, fab_2):
+   total = 0
+
+   for idx, place in enumerate(state):
+      if idx == 1:
+        total += dist(fab_1, place)
+
+      elif idx == len(state)-1:
+        total += dist(place, state[idx-1])
+        total += dist(place, fab_2)
+        return total
+
+      else:
+        total += dist(place, state[idx-1])
+
+def viz_func(state):
+    neighbours =[]
+    for idx in range(len(state)-1):
+        neighbour = copy(state)
+        neighbour[idx], neighbour[idx+1] = neighbour[idx+1], neighbour[idx]
+        neighbours.append(neighbour)
+
+    return neighbours
+
+def gen_initial_state(problem_num):
+    state = []
+    fab_1 = None
+    fab_2 = None
+
+    if problem_num == 1:
+        fab_1 = Place(1, 1, 1)
+        fab_2 = Place(2, 10, 10)
+        state.append(Place(3, 8, 8))
+        state.append(Place(4, 4, 4))
+        state.append(Place(5, 3, 3))
+        state.append(Place(6, 7, 7))
+        state.append(Place(7, 2, 2))
+        state.append(Place(8, 9, 9))
+
+    elif problem_num == 2:
+        fab_1 = Place(1, 1, 1)
+        fab_2 = Place(2, 10, 10)
+        state.append(Place(3, 2, 2))
+        state.append(Place(4, 2, 8))
+        state.append(Place(5, 6, 6))
+        state.append(Place(6, 1, 6))
+        state.append(Place(7, 10, 5))
+        state.append(Place(8, 5, 8))
+
+    elif problem_num == 3:
+        fab_1 = Place(1, 1, 1)
+        fab_2 = Place(2, 5, 2)
+        state.append(Place(3, 2, 8))
+        state.append(Place(4, 1, 4))
+        state.append(Place(5, 6, 6))
+        state.append(Place(6, 6, 1))
+        state.append(Place(7, 1, 6))
+        state.append(Place(8, 5, 8))
+
+    else:
+        print("Invalid problem number")
+        exit(-1)
+
+    shuffle(state)
+    return fab_1, fab_2, state
+
+
+def print_solution(state, fab_1, fab_2):
+    fab_1.print()
+    for place in state:
+        place.print()
+    fab_2.print()
+    print("OVERALL DISTANCE: {}".format(aval_func(state, fab_1, fab_2)))
+    print()
+
+
+if __name__ == '__main__':
+    NUM_ITERS = 100
+
+    fab_1, fab_2, state = gen_initial_state(1)
+    iter_counter = 1
+    stop_counter = 0
+
+    print("Initial solution:")
+    print_solution(state, fab_1, fab_2)
+
+    while stop_counter < NUM_ITERS:
+        neighbours = viz_func(state)
+
+        best_state = state
+        best_val = aval_func(state, fab_1, fab_2)
+        for neighbour in neighbours:
+            neighbour_val = aval_func(neighbour, fab_1, fab_2)
+            if best_val > neighbour_val:
+                best_val = neighbour_val
+                best_state = neighbour
+                stop_counter = 0
+
+        if best_state == state:
+            stop_counter += 1
+        else:
+            state = best_state
+            iter_counter += 1
+
+    print("Took {} iterations".format(iter_counter))
+    print("Best solution:")
+    print_solution(state, fab_1, fab_2)
+
+
+
+2.4-
+
+Problema 1:
+
+Initial solution:
+Id: 1; x = 1; y = 1
+Id: 4; x = 4; y = 4
+Id: 6; x = 7; y = 7
+Id: 3; x = 8; y = 8
+Id: 5; x = 3; y = 3
+Id: 7; x = 2; y = 2
+Id: 8; x = 9; y = 9
+Id: 2; x = 10; y = 10
+OVERALL DISTANCE: 36.76955262170047
+
+Took 2 iterations
+Best solution:
+Id: 1; x = 1; y = 1
+Id: 6; x = 7; y = 7
+Id: 4; x = 4; y = 4
+Id: 3; x = 8; y = 8
+Id: 5; x = 3; y = 3
+Id: 7; x = 2; y = 2
+Id: 8; x = 9; y = 9
+Id: 2; x = 10; y = 10
+OVERALL DISTANCE: 32.526911934581186
+
+
+Problema 2:
+
+Initial solution:
+Id: 1; x = 1; y = 1
+Id: 5; x = 6; y = 6
+Id: 8; x = 5; y = 8
+Id: 6; x = 1; y = 6
+Id: 4; x = 2; y = 8
+Id: 7; x = 10; y = 5
+Id: 3; x = 2; y = 2
+Id: 2; x = 10; y = 10
+OVERALL DISTANCE: 48.82903191991012
+
+Took 3 iterations
+Best solution:
+Id: 1; x = 1; y = 1
+Id: 5; x = 6; y = 6
+Id: 8; x = 5; y = 8
+Id: 4; x = 2; y = 8
+Id: 6; x = 1; y = 6
+Id: 3; x = 2; y = 2
+Id: 7; x = 10; y = 5
+Id: 2; x = 10; y = 10
+OVERALL DISTANCE: 35.08854072235119
+
+
+Problema 3:
+
+
+Initial solution:
+Id: 1; x = 1; y = 1
+Id: 7; x = 1; y = 6
+Id: 6; x = 6; y = 1
+Id: 4; x = 1; y = 4
+Id: 5; x = 6; y = 6
+Id: 8; x = 5; y = 8
+Id: 3; x = 2; y = 8
+Id: 2; x = 5; y = 2
+OVERALL DISTANCE: 30.396456589478753
+
+Took 2 iterations
+Best solution:
+Id: 1; x = 1; y = 1
+Id: 7; x = 1; y = 6
+Id: 4; x = 1; y = 4
+Id: 6; x = 6; y = 1
+Id: 5; x = 6; y = 6
+Id: 8; x = 5; y = 8
+Id: 3; x = 2; y = 8
+Id: 2; x = 5; y = 2
+OVERALL DISTANCE: 28.01129178234425
+
+
+3-
+3.1-
+
+Sim, é possível fazer um agente simples reflexo que nunca perde no jogo do galo. Este jogo é possível de não perder se o jogador seguir certas regras, não sendo um jogo que envolva probabilidades. O jogo ocorre num ambiente determinista, discreto, acessível e estático.
+
+O agente teria um conjunto de regras que o impedissem de perder o jogo. Também é importante ter em conta que a facilidade e possibilidade desta tarefa é aumentada tendo em conta o facto que o espaço de estados não é muito grande, principalmente se considerarmos que muitos estados são fruto de uma simetria ou rotação de outro estado equivalente.
+
+
+3.2-
+
+Sim, são os dois ótimos e completos, o que quer dizer que encontram sempre a solução ótima para o problema. Uma vez que todas as soluções têm custos diferentes, apenas uma solução irá ser a ótima. Logo, podemos concluir que os dois algoritmos irão de facto encontrar sempre a mesma solução. No algoritmo A*, todos os nós que são considerados soluções têm h=0, logo o nó que contém a solução ótima terá o custo menor, e será esse o escolhido (tal como na pesquisa de custo uniforme).
+
+
+3.3-
+
+a) C
+b) E
+c) D
+d) C
+e) G
+
+3.4-
+
+A ordenação dos nós gerados pelo valor da função de avaliação aumenta a probabilidade da ocorrência dos cortes alfa-beta, o que pode melhorar o desempenho temporal do algoritmo.
+
+3.5-
+
+a)
+B - 3
+C - <= 1
+D - 8
+A - 8
+
+(escolhe o nó D)
+
+b) 
+O, Q, T, U, Y
+
+
+3.6-
+
+a) O novo estado é pior. Logo aceitará com probabilidade igual a eˆ(-2/0.9) = 0.108 = 10.8%
+b) O novo estado é melhor, por isso irá aceitar sempre. Probabilidade 100%.
+
+3.7-
+
+Overfitting ocorre quando o modelo de previsão adapta-se demasiado aos dados do grupo de treino, obtendo muitos bons resultados para eles; no entanto, como está demasiado "habituado" a esses dados, quando tenta prever outros dados (do grupo de teste) obtem maus resultados.
+De modo a evitar ou detetar o overfitting, pode-se treinar o modelo utilizando a técnica de k fold cross validation.
+
+
+3.8-
+
+Os métodos descritos podem ser usados para treinar o modelo e estimar a taxa de erro do mesmo, sendo isto feito através de previsões e treinos baseados em diferentes partições dos dados. Ambos os métodos utilizam o conceito de conjunto de treino e conjunto de teste. O conjunto de treino são os dados que são utilizados pelo algoritmo de aprendizagem para produzir o modelo, e o conjunto de teste são os dados utilizados para testar e avaliar o modelo depois de este ser treinado.
+
+O método holdout é mais indicado para casos em que o número de exemplos/dados é grande, normalmente mais de 1000 exemplos. Os dados são divididos aproximadamente em 2/3 para treino e 2/3 para teste.
+
+O método cross-validation e as suas variantes são para conjuntos de tamanho intermédio, aproximadamente 1000 exemplos. Consiste em dividir os dados em k partições disjuntas, sendo que k-1 são utilizadas para treino, e 1 é utilizada para teste, calculando a taxa de erro (k fold cross validation). Depois, a partição de teste passa a ser uma partição das que era de treino, e a antiga partição de teste passa a ser de treino, repetindo-se o processo até se calcular a taxa de erro com cada partição sendo a de teste. Faz-se depois a média das taxas de erro geradas para obter a taxa de erro final.
+
+
+3.9- 
+
+VP - (Teste positivo; Gravida)
+FN - (Teste negativo; Gravida)
+FP - (Teste positivo; Nao gravida)
+VN - (Teste negativo; Nao gravida)
+
+Taxa de acerto = (VP + VN) / (VP + VN + FP + FN) = 0.75 
+Precisao = VP / (VP + FP) = 45 / (45 + 20) = 0.69
+Recall = VP / (VP + FN) = 45 / (45 + 5) = 0.9
+F-measure = 2*VP / (2 * VP + FN + FP) = 2*45 / (2*45 + 5 + 20) = 0.78
+
+3.10 - Nao sai.
+
+
+
+
+
+
+

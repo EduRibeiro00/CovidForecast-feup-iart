@@ -1,0 +1,43 @@
+1-
+a) Feito no caderno.
+
+b) Sim, a heuristica apresentada é admissível. Para esta ser admissível, nunca pode sobreestimar o valor do caminho ótimo de um estado até uma solução. Isso verifica-se em todos os nós da árvore: o valor da heurística de um nó é sempre menor ou igual do valor acumulado do caminho ótimo para uma das soluções.
+
+c) A solução ótima é I -> B -> H -> D -> F2, pois é o caminho até uma solução com custo menor. Como podemos observar nas árvores geradas, apenas um algoritmo conseguiu chegar à solução ótima, que foi o algoritmo A*. O algoritmo em largura e a pesquisa gulosa nunca garantem a otimalidade, enquanto que no algoritmo A*, se a heurística utilizada for admissível, o que é o caso, o algoritmo não só é completo como ótimo.
+
+
+2-
+a)
+
+Cada indivíduo da população pode ser representado como um array com 5 posições, em que cada posição representa o tipo de árvore que se irá plantar na área de índice i (assumindo que índices começam em 1). É uma representação simples, que não exige muita memória, e ao mesmo tempo facilita os processos de cruzamento e mutação do algoritmo genético.
+
+O indivíduo i) ficaria [E P E C E].
+
+
+b)
+
+Como se prentende minimizar o custo total, a função de avaliação deve multiplicar o custo de cada árvore pelo número de hectares da área, e somar os valores resultantes para cada área.
+
+(depois era calcular para cada um, que é trivial)
+
+
+4-
+a) Afirmação falsa.
+
+b) O algoritmo de arrefecimento simulado é semelhante ao algoritmo de hill climbing. Este último tem uma desvantagem que é a possibilidade de o estado atual ficar preso num máximo/mínimo local, se os vizinhos do estado atual forem piores que ele. O algoritmo de arrefecimento simulado tenta combater essa desvantagem, ao permitir a aceitação de estados piores por vezes, de modo a conseguir "escapar" desses mínimos/máximos locais, diminuindo assim a probabilidade de o algoritmo retornar uma solução que não seja ótima. Para tal, o algoritmo mantém um parâmetro, chamado de temperatura. Quando maior for a temperatura, maior é a probabilidade de se aceitar um estado pior que o atual, caso aconteça que um estado pior seja gerado. À medida que o algoritmo evoluí com o tempo, o valor da temperatura vai diminuíndo, diminuíndo também a probabilidade de aceitação desses estados piores.
+
+c) Está certa, fiz de cabeça.
+
+d) Não sai.
+
+e) Não sai.
+
+f) Não sai.
+
+g) Repetida.
+
+
+
+
+
+

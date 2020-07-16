@@ -1,0 +1,11 @@
+1-
+a, b, c) Feito no caderno.
+
+d) A heurística é admissível, pois em qualquer estado/hotel, nunca sobrestima o custo real desse estado até ao estado final, seguindo pelo caminho ótimo. Se um hotel se encontra a mais de 100km, então não pode viajar diretamente para o ponto X, logo terá de passar por pelo menos mais um hotel. No melhor dos casos, apenas tem de passar por um hotel, sendo esse o mais barato dos restantes, ficando o valor da heurística igual ao do caminho ótimo. Nas restantes situações o caminho ótimo irá ter um valor maior que a heurística.
+
+2-
+a)
+
+
+
+

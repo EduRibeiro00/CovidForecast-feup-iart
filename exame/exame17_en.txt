@@ -1,0 +1,127 @@
+1-
+a) Feito no caderno.
+
+b) Todas.
+
+c) Para uma heurística ser admissível, esta não pode sobreestimar o valor de um estado, ou seja, o valor de uma heurística para um determinado estado tem de ser menor ou igual que o valor do caminho ótimo desse estado até uma solução.
+
+h1 não é admissível, uma vez que pode sobreestimar o custo de uma solução. Ex: queremos ir de a1 para b3; é só um salto, no entanto, a heurística irá dar o valor de 3.
+h2 não é admissível, pelas mesmas razões que h1 (o exemplo de h1 também se verifica para h2, com a heurística a prever 2).
+h3 é admissível, pois nunca sobreestima o custo até à solução final. Como em cada movimento o cavalo se movimenta 2 casas numa determinada direção, ao dividir a distância por 2 impede-se de prever um número de movimentos maior do que o ótimo.
+h4 não é admissível. Se começarmos em a1 e quisermos acabar em d4, apenas precisamos de 2 movimentos mas a heurística prevê 4.
+h5 é admissível, uma vez que o valor desta heurística irá ser sempre menor ou igual que o valor dado por h3; já que esta é admissível, então h5 também é admissível.
+
+d) Feito no caderno. Solução encontrada: a1 -> b3 -> c5 -> d7 -> f8.
+
+2-
+a) A representação do indivíduo pode ser feita de maneira a que cada cor seja codificada por 2 bits (01 -> azul; 10 -> verde; 11 -> branco). Logo, cada indivíduo irá ter 5*2 = 10 bits, ou seja 2 bits por cada um dos 5 países.
+
+I1: B,V,B,A,V -> 11 10 11 01 10
+I2: A,V,V,A,B -> 01 10 10 01 11
+I3: B,V,A,V,V -> 11 10 01 10 10
+I4: B,B,B,B,V -> 11 11 11 11 10
+I5: B,B,V,B,V -> 11 11 10 11 10
+
+
+b) De modo a facilitar os exercícios c) e d), a função de adaptação poderá ser de maximização.
+
+f = 100 - 10 * n_iguais_adj, em que n_iguais_adj é o número de países que têm a mesma cor e são adjacentes ao mesmo tempo. Isto é feito de modo a penalizar os indivíduos que não cumprem esta restrição do problema.
+
+P1: fronteira com P2 e P3
+P2: fronteira com P1, P2, P3 e P5 (todos)
+P3: fronteira com P1, P2 e P4
+P4: fronteira com P2, P3 e P5
+P5: fronteira com P2 e P4
+
+I1: 100 - 10 * 2 = 80
+I2: 100 - 10 * 1 = 90
+I3: 100 - 10 * 3 = 70
+I4: 100 - 10 * 5 = 50
+I5: 100 - 10 * 2 = 80
+
+
+c) I2 é o melhor, passa por elitismo
+
+Soma de todos os valores = 370
+p(I1) = 80 / 370 = 0.216 -> ]0, 0.216]
+p(I2) = 90 / 370 = 0.243 -> ]0.216, 0.459]
+p(I3) = 70 / 370 = 0.189 -> ]0.459, 0.648]
+p(I4) = 50 / 370 = 0.135 -> ]0.648, 0.783]
+p(I5) = 80 / 370 = 0.216 -> ]0.783, 1]
+
+0.7  -> ]0.648, 0.783] -> I3
+0.35 -> ]0.216, 0.459] -> I2
+0.15 -> ]0, 0.216]     -> I1
+0.81 -> ]0.783, 1]     -> I5
+
+Resultado: seleção entre, I2, I3, I2, I1, I5.
+
+
+d)
+Cruzamento entre os bits 4 e 5
+
+I2 -> elitismo -> vai para a população final
+I3 -> 0.81 -> 0.75 < 0.81 -> vai para a população final
+I2 -> 0.41 -> 0.75 > 0.41 -> cruzamento
+I1 -> 0.24 -> 0.75 > 0.24 -> cruzamento
+I5 -> 0.88 -> 0.75 < 0.88 -> vai para a população final
+
+I1: 11 10 11 01 10
+I2: 01 10 10 01 11
+
+
+Nova população:
+I2: 01 10 10 01 11
+I3: 11 10 01 10 10 -> nao faz a mutação porque 00 é inválido.
+I12: 11 10 10 01 11
+I21: 01 10 11 01 10
+I5: 11 11 10 11 10
+
+
+4-
+a) 
+Ao expandirmos certos nós, iremos encontrar nós cujo custo irá ser maior que o threshold imposto pelo algoritmo, logo não vão ser explorados. Porém, o novo threshold, se uma nova iteração acontecer, irá ser igual ao valor mínimo dos nós que não foram explorados na iteração anterior por terem valor acima do threshold.
+
+b)
+Nao sai.
+
+c)
+Quanto maior for a temperatura, maior é a probabilidade de escolher um estado sucessor que seja pior que o atual. Se o estado sucessor for melhor que o atual, o valor da temperatura não interessa, pois esse estado é sempre aceitado.
+Se a diferença absoluta entre os dois estados for negativa (ou seja, o estado sucessor é pior), quanto maior ela for menos provável é esse estado sucessor de ser aceite como novo estado atual. Se o nó for melhor, mais uma vez, ele é sempre aceite.
+
+d)
+
+Isto acontece quando todos os possíveis cortes alfa-beta são realizados, apenas sendo explorados metade dos nós/caminhos. O número de cortes alfa-beta é maximizado quando os valores de cada posição se encontram ordenados.
+
+e)
+A fórmula de "Naive Bayes" assenta no princípio que todos os atributos sendo considerados são independentes uns dos outros, e isso pode não se verificar em todos os casos. Nos casos em que os atributos dependem muito uns dos outros, este método pode não gerar previsões precisas.
+
+f) Nao sai.
+
+g) Uma função linearmente separável é uma função que através de um conjunto de inputs, gera um output. De modo a separar os vários conjuntos de outputs, é possível utilizar uma linha ou um plano, de modo a que todos os conjuntos de inputs (mapeados no espaço) que fiquem do mesmo lado da linha/plano têm de produzir o mesmo output.
+
+O modelo perceptron apenas pode ser utilizado para caracterizar funções linearmente separáveis, uma vez que não utiliza camadas interiores no seu modelo neuronal; apenas existem nós de input, que contém os inputs, e o nó output, que contém o output produzido pelos inputs. Como o perceptron apenas constroi um hiperplano, não é possível utilizá-lo para funções que não são linearmente separáveis4-
+a) 
+Ao expandirmos certos nós, iremos encontrar nós cujo custo irá ser maior que o threshold imposto pelo algoritmo, logo não vão ser explorados. Porém, o novo threshold, se uma nova iteração acontecer, irá ser igual ao valor mínimo dos nós que não foram explorados na iteração anterior por terem valor acima do threshold.
+
+b)
+Nao sai.
+
+c)
+Quanto maior for a temperatura, maior é a probabilidade de escolher um estado sucessor que seja pior que o atual. Se o estado sucessor for melhor que o atual, o valor da temperatura não interessa, pois esse estado é sempre aceitado.
+
+
+d)
+
+Isto acontece quando todos os possíveis cortes alfa-beta são realizados, apenas sendo explorados metade dos nós/caminhos. O número de cortes alfa-beta é maximizado quando os valores de cada posição se encontram ordenados.
+
+e)
+A fórmula de "Naive Bayes" assenta no princípio que todos os atributos sendo considerados são independentes uns dos outros, e isso pode não se verificar em todos os casos. Nos casos em que os atributos dependem muito uns dos outros, este método pode não gerar previsões precisas.
+
+f) Nao sai.
+
+g) Uma função linearmente separável é uma função que através de um conjunto de inputs, gera um output. De modo a separar os vários conjuntos de outputs, é possível utilizar uma linha ou um plano, de modo a que todos os conjuntos de inputs (mapeados no espaço) que fiquem do mesmo lado da linha/plano têm de produzir o mesmo output.
+
+O modelo perceptron apenas pode ser utilizado para caracterizar funções linearmente separáveis, uma vez que não utiliza camadas interiores no seu modelo neuronal; apenas existem nós de input, que contém os inputs, e o nó output, que contém o output produzido pelos inputs. Como o perceptron apenas constroi um hiperplano, não é possível utilizá-lo para funções que não são linearmente separáveis.
+
+

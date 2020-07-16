@@ -1,0 +1,63 @@
+1-
+1.1- Feito no caderno.
+
+1.2-
+
+Uma função heuristica que seja admissivel para este problema pode ser a soma de entidades que estao no lado esquerdo da margem do rio. Esta função nunca sobrestima o número de travessias que tem de ser feitas, a partir de um determinado estado, de modo a chegar ao estado final. 
+
+Valor da função para cada estado feito no caderno, mas é trivial.
+
+1.3- Feito no caderno.
+
+
+2-
+2.1-
+
+O custo de uma alocação pode ser calculado através da soma dos tempos em que as máquinas estão a trabalhar, selecionando o máx de entre as 3 máquinas (considerando que elas podem trabalhar ao mesmo tempo).
+
+Assim, o custo da alocação S1 é 25, uma vez que a máquina M1 demora 25 e a M2 demora 21.
+
+2.2-
+S1 = [1 1 2 2 1]
+
+Os sucessores de S1 são:
+[2 1 2 2 1] = 33
+[1 3 2 2 1] = 23
+[1 1 3 2 1] = 25
+[1 1 2 3 1] = 25
+[1 1 2 2 2] = 31
+[1 1 2 2 3] = 23
+
+A variante steepest ascent do hill climbing gera todos os vizinhos e transita para o melhor deles (se for melhor que o estado atual). Neste caso, o algoritmo iria transitar para [1 3 2 2 1], ou [1 1 2 2 3]. Dependeria da ordem pela qual os estados seriam gerados, e também dependeria se o algoritmo aceitasse estados com valor igual ao anterior.
+
+2.3-
+
+[2 1 2 2 1] = 33, como é maior, a probabilidade de aceitar é e^(-8/10) = 0.4493 < 0.55, logo não aceita.
+[1 3 2 2 1] = 23, como é menor, aceita logo. É este o sucessor de S1.
+
+3- Não sai.
+
+4-
+4.1-
+
+Utilizaria uma pesquisa em profundidade com profundidade limitada. Sabendo que queremos uma solução qualquer, e que todas as soluções estão na mesma profundiade (aproximadamente), uma pesquisa em largura seria bastante ineficiente, tanto em tempo como em espaço.
+
+4.2-
+
+h'(x) = h(x) / 1.1 = 0.909 * h(x)
+
+4.3- Não sai.
+
+4.4-
+
+10 + 15 + 27 + 30 = 82
+10 / 82 = 0.1219
+15 / 82 = 0.1829
+27 / 82 = 0.329
+30 / 82 = 0.3658
+
+4.5-
+
+
+
+

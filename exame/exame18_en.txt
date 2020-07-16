@@ -1,0 +1,65 @@
+1-
+a)
+Como a funcao de custo equivale à distancia percorrida, ou seja, à profundidade de cada nó, a pesquisa de custo uniforme equivale a uma pesquisa em largura.
+
+b2 -> custo 2
+h1 -> custo 7
+d5 -> custo 7
+a8 -> custo 8
+g4 -> custo 9
+
+b) 
+Para uma funcao heurística ser admissível, não deve sobrestimar o valor ótimo do estado atual até à solução. Ou seja h(x) <= sol_otima(x)
+
+A heuristica h1 nunca sobrestima o número de movimentos que aínda falta dar. Se algum objeto estiver na sua posição inicial, não só o robó tem de o ir buscar como tem de o entregar na célula específica para esse objeto, o que leva a um número de movimentos sempre maior que o número de objetos na sua posição inicial. Por isso, concluí-se que a heurística h1 é admissível.
+
+
+A heurística h2, pela mesma razão, também é admissível. O número de objetos que ainda faltam por na sua posicao final vai ser sempre menor que o numero de movimentos que é necessário para isso acontecer.
+
+
+A heurística h3 não é admissível, uma vez que há casos em que o valor calculado pela heurística ultrapassa o valor ótimo até à solução, ou seja, a heurística sobrestima o número de movimentos necessários. Por exemplo, no caso em que o robô está na posição a2, com X e Z (e autonomia suficiente para entregar os 2), a heurística irá calcular a distância manhattan de X mais a de Z, ou seja, 1 + 8 = 9. No entanto, o robô apenas precisa de 8 movimentos para entregar as duas caixas.
+
+A heurística h4 é admissível, pelas mesmas razões que h1 e h2. No caso em que h3 não era válido, h4 previa exatamente 8 passos.
+
+
+c)
+
+A heurística h4, pois é a heurística que não sobrestima (ou seja, é uma heurística válida) que gera valores mais próximos aos valores da solução ótima, ou seja, do número de passos mínimo para concluír as tarefas. Isso faz com que na maioria dos casos, o nó realmente mais perto da solução é o que é espandido.
+
+
+
+2-
+a)
+
+Um indivíduo da população pode ser representado como uma lista de 5 números, sendo que cada elemento indica o número da máquina a que um determinado objeto ficou alocado (A é o índice 0, B é o 1, etc). Esta codificação poderá ser utilizada pois é uma maneira fácil de representar as diferentes soluções do problema, sendo que as tarefas de cruzamento e mutação não ficam muito complicadas utilizando esta representação. 
+
+Por exemplo, o indivíduo ii) ficaria [1 1 2 2 2].
+
+b) A função poderia ser: somava-se o tempo dispendido por cada máquina a fabricar os objetos que lhe tinham sido alocados, e depois calculava-se o máximo dos tempos de cada máquina (uma vez que assume-se que as diferentes máquinas podem trabalhar ao mesmo tempo, mas uma máquina só pode construir um objeto de cada vez).
+
+	i)   25
+	ii)  31
+	iii) 27
+	iv)  41
+
+
+3- Nao sai.
+
+4- a) Admissivel - nunca sobreestima
+      Consistente - a estimativa e sempre menor ou igual à estimativa de um qualquer vizinho, mais o custo de alcancar o vizinho
+      Uma heuristica admissível pode n ser consistente.
+
+   b) Nao sai.
+	
+   c) eˆ(-3/0.8) = 0.023 = 2.3%
+
+   d) Demos??
+
+   e) N demos.
+
+   f) N sei.
+
+  
+
+
+

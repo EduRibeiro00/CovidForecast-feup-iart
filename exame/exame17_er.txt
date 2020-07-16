@@ -1,0 +1,82 @@
+1-
+a) S -> G.
+
+b) Na pesquisa de custo uniforme, o próximo estado a ser expandido é o nó folha (ou seja, que ainda não foi expandido) que apresenta o custo menor desde o início.
+S, B, A, D
+
+c) Feito no caderno.
+
+d) A função heurística apresentada é admissível, uma vez que, para cada estado, o valor heurístico apresentado é sempre menor ou igual que o custo do caminho ótimo desse estado até à solução. No entanto, a função heurística não é consistente. Para tal, teria de se verificar a seguinte propriedade: para cada estado, o valor da heurística teria de ser menor ou igual do que a soma do valor heurístico de um dos seus sucessores, mais o custo de transitar para esse sucessor. Se repararmos nos estados B e D, D é sucessor de B e apresenta o valor h=1, enquanto que B apresenta h=6, sendo que a ligação de B para D tem custo 2. Para ser consistente, 6<=2+1, o que não se verifica.
+
+2-
+
+c)
+O mecanismo de inferência denominado backwards chaining consiste em, a partir de uma hipótese, questão ou teoria a provar, o raciocínio proceder na rede de inferência até aos factos representados na base. Ou seja, tentamos chegar das conclusões às condições, daí o nome backwards chaining.
+
+
+3-
+a) Uma função de avaliação cujo objetivo é a sua minimização pode ser a soma das distâncias entre cidades consecutivas na ordem estipulada pelo indivíduo. Uma função de vizinhança para este problema pode ser, por exemplo, a seleção aleatória de um de dois movimentos: ou a troca entre a 2a e 3a cidades, ou entre a 3a e a 4a cidades. 
+O valor da função de avaliação do estado inicial é 30 + 35 + 20 + 35 = 120.
+
+b)
+Para este exercício, foi considerado que a função de vizinhança gera sempre um vizinho fazendo primeiro a troca entre as cidades 2 e 3, e só depois é que troca entre a 3 e 4.
+
+Iteração 1: T = 50
+	    Estado atual = A-B-C-D-A (f=120)
+	    Estado vizinho gerado: A-C-B-D-A (f=40+35+25+25=125)
+	    120-125=-25, logo o estado é pior. Probabilidade de aceitar = eˆ(-25/50) = 0.6
+	    0.82 > 0.6, logo o estado não é aceitado.
+
+Iteração 2: T = 40
+	    Estado atual = A-B-C-D-A (f=120)
+	    Estado vizinho gerado: A-B-D-C-A (f=30+25+20+40=115)
+	    120-115=5, logo o estado é melhor! Aceita-se o novo estado.
+
+Iteração 3: T = 30
+	    Estado atual = A-B-D-C-A (f=115)
+	    Estado vizinho gerado: A-D-B-C-A (f=35+25+35+40=135)
+	    115-135=-20, logo o estado é pior. Probabilidade de aceitar = e^(-20/30)=0.513
+	    0.4 < 0.513, logo o estado é aceitado!
+
+Iteração 4: T = 20
+	    Estado atual = A-D-B-C-A (f=135) - foi considerado que o estado A-B-D-C-A não foi gerado porque senão iamos simplesmente voltar para o estado anterior.
+	    Estado vizinho gerado: A-D-C-B-A (f=35+20+35+30=120)
+	    135-120=15, logo o estado é melhor! Aceita-se o novo estado.
+
+
+
+c) O algoritmo de arrefecimento simulado é semelhante ao algoritmo de hill climbing, no sentido em que gera vizinhos do estado atual e aceita os estados vizinhos se estes forem melhores que o atual. Mas o problema do hill climbing é a possibilidade de ficar preso em máximos/mínimos locais, sem atingir a solução ótima. O algoritmo de arrefecimento simulado tenta combater isto introduzindo um valor, denominado de temperatura, que influencia a probabilidade de aceitação de estados piores que o atual, como uma maneira de "fugir" aos máximos/mínimos locais e aumentar a probabilidade de se chegar à solução ótima. O grau de aleatoridade mencionado no enunciado é regido pela temperatura, que diminuí à medida que o algoritmo progride no tempo, mas também pela diferença de valores entre o estado atual e o estado vizinho gerado: quando maior for essa diferença, se o estado vizinho for pior, menor é a probabilidade de o aceitar. 
+
+Quando o grau de aleatoridade é nulo, basicamente o algoritmo transforma-se no algoritmo de hill climbing: apenas aceita os estados que são melhores que o atual.
+Quando o grau de aleatoridade é infinito, o algoritmo aceita qualquer estado vizinho que for gerado, quer seja ele melhor ou pior que o atual.
+
+
+4-
+a) Não sai.
+
+b) 
+Podemos tomar como exemplo o algoritmo de arrefecimento simulado. Este algoritmo mantém um valor denominado temperatura, que regula a probabilidade de aceitação de um estado vizinho que é considerado pior que o estado atual. O algoritmo faz o seguinte: gera um estado vizinho aleatoriamente. Se este estado for melhor que o estado atual (isto é feito com base na função de avaliação que está a ser utilizada pelo algoritmo), então a aceitação deste estado dá-se de uma forma determinística, porque o estado é sempre aceite independentemente de outros parâmetros ou condições. Se o estado for pior, há uma probabilidade de o estado ser aceite, mas também pode ser rejeitado. Nesse caso, a aceitação do vizinho é probabilística.
+
+c) Não sai.
+
+d) ]5, +inf[
+   ]-inf, 5]
+   ]-inf, +inf[
+   ]-inf, 5], o valor do segundo nó
+   5
+
+e)
+Função de ativação é a função que se encontra em cada nó, que consiste na soma pesada de todos os seus inputs (com os pesos das arestas respetivas, que têm como destino o nó em questão), menos o threshold imposto no nó. Esta função transforma o conjunto de inputs que o nó recebe num valor de output, que depois é transimitido aos nós da camada seguinte se existirem.
+
+Função de transferência???
+
+f)
+Machine learning, contrariamente à programação tradicional, em vez de se construír um programa e fornecer certos dados para ele gerar um output, através dos dados e do output conseguimos gerar o programa que queremos.
+
+Aprendizagem supervisionada é então um tipo de machine learning em que os inputs são fornecidos, assim como os outputs correspondentes a estes inputs, e o objetivo é o programa perceber como mapear e relacionar esses inputs aos outputs correspondentes, para quando for fornecido um conjunto de inputs sem output, este seja capaz de prever qual é o output correto correspondente. Esta técnica pode ser aplicada e subdividida em vários campos, como por exemplo a classificação de exemplos ou a regressão de valores.
+
+g) Não sai.
+
+
+
+

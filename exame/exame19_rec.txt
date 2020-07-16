@@ -1,0 +1,92 @@
+1-
+1.1-
+
+Representacao do estado:
+
+Para a representacao do estado, basta um par de coordenadas (x,y) indicando a posição atual.
+
+Estado inicial: (nó origem, D(1,2))
+Estado final/teste objetivo: (nó destino, J(3,4))
+
+Operadores: [up, right, left, down]
+Cada operador muda a posição atual, fazendo um movimento para cima, direita, esquerda ou para baixo, respetivamente.
+Relativamente a pré-condições, ou seja, de modo a verificar se, dado o estado atual, é possível aplicar um determinado operador para gerar outro estado, será necessário o uso de estruturas de dados externas que contém informação sobre o mapa do labirinto e sobre as posições já utilizadas. Tendo a representacao do labirinto, sabemos os limites do mesmo, e sabemos assim que p.ex. quando x = 1, o operador da esquerda nao pode ser utilizado, e quando y>=2 e y<=3 e x=2, nao podemos aplicar o operador da direita (raciocinio igual para o resto dos casos). De modo a evitar estados repetidos num determinado ramo, uma estrutura auxiliar contendo as posicoes ja percorridas poderia ser utilizada; se um estado novo gerado por um operador ja estiver contido nessa estrutura de dados, entao o operador nao podera ser aplicado.
+
+Como custo, cada operador tera um custo de 1, de modo a que a solucao final otima (ou seja, de custo minimo) seja a solucao que vai da casa de partida ao objetivo no menor numero possivel de movimentos.
+
+1.2- Feito no caderno.
+
+1.3- Feito no caderno.
+
+1.4- Uma vez que os estados gerados sao concatenados no fim da lista, o algoritmo apresentado assemelha-se a uma pesquisa em largura, pois os nós que serão processados primeiro são os nós criados há mais tempo, ou seja, os nós mais perto da raíz, que tem menor profundidade.
+
+Para o tornar num algoritmo de pesquisa em profundidade iterativa, primeiro é necessário modificar o algoritmo para corresponder a uma pesquisa em profundidade. Tal pode ser feito, nao concatenando os estados gerados ao fim da fila, mas para cada estado gerado naquele momento, chamar a funcao recursivamente.
+
+
+1.5-
+
+Para este labirinto específico, o espaço de estados é constituído por cada casa possível de ser ocupada, que são 10. Devido a ser um numero reduzido, a dificuldade e a complexidade de resolver o problema tambem e reduzida, uma vez que a dimensao da arvore de estados, em principio, nao sera muito grande.
+
+Um metodo adequado poderia ser a utilizacao do algoritmo A*, com funcao heuristica igual a distancia manhattan do estado atual ao destino.
+
+2-
+2.1- Nao sai.
+
+2.2-
+
+
+
+3-
+3.1- Assumindo que a primeira iteracao comeca com profundidade 1, temos
+
+Iteracao 1: 1 -> 2
+Iteracao 2: 1 -> 2 -> 3
+Iteracao 3: 1 -> 2 -> 3 -> 1 -> 4 (o 4 e gerado a partir do 3 tambem)
+
+
+
+3.2-
+
+c), mais proxima do valor real.
+
+
+3.3-
+
+Não é verdade, uma vez que a pesquisa hill climbing pode ficar presa em minimos/maximos locais. Este algoritmo utiliza apenas um estado e tenta melhorá-lo, observando os seus vizinhos e atualizando o estado se algum deles for melhor que o atual. Mas se nenhum dos vizinhos satisfazer essa condicao, o hill climbing ira retornar com um estado que poderá não ser ótimo, nao percorrendo o mesmo numero de estados. Por outro lado, o algoritmo greedy calcula uma arvore de estados a partir do estado inicial, sendo que o numero de estados calculados poderá então ser diferente.
+
+3.4-
+
+O método do arrefecimento simulado utiliza o conceito de "temperatura", um número que vai sendo sucessivamente reduzido e que controla a probabilidade do algoritmo, ao encontrar uma solução pior que a atual, a utilizar em vez de manter a atual. Isto é feito de modo ao algoritmo não ficar preso em máximos/mínimos locais, que acontece com o algoritmo de hill climbing.
+
+
+3.5-
+
+Estado: os 4 numeros
+Populacao inicial: 4 numeros random dentro do intervalo
+Cruzamento: um individuo dava X1 e X2, e o outro X3 e X4
+Mutacao: um dos numeros a sorte ficava random
+
+
+3.6-
+
+A- 13
+B- 1
+C- 13
+D- <= 8
+
+Nos nao calculados: M, N
+
+
+3.7- Feito no caderno. 
+
+3.8- No caderno.
+
+3.9- Nao sai.
+
+3.10- Ver explicacao no Powerpoint.
+
+
+
+
+
+
